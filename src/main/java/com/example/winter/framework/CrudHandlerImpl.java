@@ -28,11 +28,11 @@ public class CrudHandlerImpl implements CrudHandler {
 
     @ResponseBody
     @Override
-    public Object readById(HttpServletRequest request) throws Throwable {
+    public Object readById(HttpServletRequest request) {
         final String requestURI = request.getRequestURI();
         final int indexOfId = requestURI.lastIndexOf('/') + 1;
         final Long id = Long.parseLong(requestURI.substring(indexOfId));
-        return repository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 데이터입니다."));
+        return repository.findById(id).orElseThrow();
     }
 
     @ResponseBody
