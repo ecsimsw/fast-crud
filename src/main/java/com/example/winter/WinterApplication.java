@@ -16,6 +16,7 @@ public class WinterApplication {
         ConfigurableApplicationContext ctx = application.run(args);
         JpaRepository testEntityRepository = (JpaRepository) ctx.getBean("testEntityRepository");
         testEntityRepository.save(new TestEntity("test1"));
+        testEntityRepository.save(new TestEntity("test2"));
 
         try{
             ByHandlingDispatcherServlet fw = (ByHandlingDispatcherServlet) ctx.getBean("byHandlingDispatcherServlet");

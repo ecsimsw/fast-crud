@@ -4,8 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.lang.annotation.Annotation;
 
 public class CrudHandlerImpl implements CrudHandler {
 
@@ -24,14 +22,17 @@ public class CrudHandlerImpl implements CrudHandler {
 
     @ResponseBody
     @Override
-    public Object read(HttpServletRequest request, HttpServletResponse response) {
-        try{
-            final Object saved = repository.findById(1L).get();
-            response.getOutputStream().print(saved.toString());
-            return saved;
-        } catch (Exception e){
-            return null;
-        }
+    public Object readAll(HttpServletRequest request) {
+        return repository.findAll();
+    }
+
+    @ResponseBody
+    @Override
+    public Object readById(HttpServletRequest request) throws Throwable {
+        final String requestURI = request.getRequestURI();
+        final int indexOfId = requestURI.lastIndexOf('/') + 1;
+        final Long id = Long.parseLong(requestURI.substring(indexOfId));
+        return repository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 데이터입니다."));
     }
 
     @ResponseBody

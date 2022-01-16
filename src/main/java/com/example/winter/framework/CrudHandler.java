@@ -7,7 +7,9 @@ public interface CrudHandler {
 
     Object create(HttpServletRequest request);
 
-    Object read(HttpServletRequest request, HttpServletResponse response);
+    Object readAll(HttpServletRequest request);
+
+    Object readById(HttpServletRequest request) throws Throwable;
 
     Object update(HttpServletRequest request);
 
