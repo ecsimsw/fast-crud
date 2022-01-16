@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-public class MainFramework {
+//@RestController
+public class ByRegisteringServlet {
 
     @Autowired
     private ApplicationContext context;
