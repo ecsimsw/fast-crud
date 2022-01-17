@@ -1,6 +1,6 @@
-package com.example.winter.domain;
+package com.example.fastCrud.application.domain;
 
-import com.example.winter.framework.CRUD;
+import com.example.fastCrud.framework.CRUD;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;

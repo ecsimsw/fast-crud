@@ -1,7 +1,6 @@
-package com.example.winter.framework;
+package com.example.fastCrud.framework;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public interface CrudHandler {
 

@@ -1,5 +1,6 @@
-package com.example.winter.framework;
+package com.example.fastCrud.framework;
 
+import com.example.fastCrud.framework.utils.HttpHandlerUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,8 +47,7 @@ public class CrudHandlerImpl implements CrudHandler {
         final Object saved = repository.findById(id).orElseThrow();
         final Object other = mapEntityFromBody(request);
 
-        final Field[] fields = saved.getClass().getDeclaredFields();
-        for (Field field : fields) {
+        for (Field field : saved.getClass().getDeclaredFields()) {
             if (field.getName().equals("id")) {
                 continue;
             }

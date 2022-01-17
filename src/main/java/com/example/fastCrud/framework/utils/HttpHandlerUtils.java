@@ -1,4 +1,4 @@
-package com.example.winter.framework;
+package com.example.fastCrud.framework.utils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
