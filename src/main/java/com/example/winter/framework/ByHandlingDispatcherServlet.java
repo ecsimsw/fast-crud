@@ -1,5 +1,6 @@
 package com.example.winter.framework;
 
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,17 +32,25 @@ public class ByHandlingDispatcherServlet {
         final String[] beanNamesForCRUD = context.getBeanNamesForAnnotation(CRUD.class);
         Arrays.stream(beanNamesForCRUD).forEach(name -> {
             final JpaRepository repository = (JpaRepository) context.getBean(name + "Repository");
-            registerCrudMappings(name, new CrudHandlerImpl(repository));
+            final Class<?> aClass = context.getBean(name).getClass();
+            registerCrudMappings(name, new CrudHandlerImpl(repository, aClass));
         });
     }
 
     private void registerCrudMappings(String name, CrudHandler crudHandler) {
         try {
+            registerCreateMapping(name, crudHandler);
             registerReadByIdMapping(name, crudHandler);
             registerReadAllMapping(name, crudHandler);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
+    }
+
+    private void registerCreateMapping(String rootPath, CrudHandler crudHandler) throws NoSuchMethodException {
+        final RequestMappingInfo getMappingInfo = getRequestMappingInfo("/" + rootPath, RequestMethod.POST);
+        final Method method = crudHandler.getClass().getMethod("create", HttpServletRequest.class);
+        requestMappingHandlerMapping.registerMapping(getMappingInfo, crudHandler, method);
     }
 
     private void registerReadByIdMapping(String rootPath, CrudHandler crudHandler) throws NoSuchMethodException {

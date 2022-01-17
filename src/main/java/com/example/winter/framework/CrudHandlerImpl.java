@@ -1,23 +1,35 @@
 package com.example.winter.framework;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 public class CrudHandlerImpl implements CrudHandler {
 
-    private final JpaRepository repository;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    public CrudHandlerImpl(JpaRepository repository) {
+    private final JpaRepository repository;
+    private final Class<?> aClass;
+
+    public CrudHandlerImpl(JpaRepository repository, Class<?> aClass) {
         this.repository = repository;
+        this.aClass = aClass;
     }
 
     @ResponseBody
     @Override
-    public Object create(HttpServletRequest servletRequest) {
-        final Object saved = repository.findById(1L).get();
-        return saved;
+    public Object create(HttpServletRequest request) {
+        try {
+            final String body = HttpHandlerUtils.getBody(request);
+            repository.save(OBJECT_MAPPER.readValue(body, aClass));
+            return body;
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+            return null;
+        }
     }
 
     @ResponseBody
@@ -44,7 +56,7 @@ public class CrudHandlerImpl implements CrudHandler {
 
     @ResponseBody
     @Override
-    public Object delete(HttpServletRequest servletRequest) {
+    public Object delete(HttpServletRequest request) {
         final Object saved = repository.findById(1L).get();
         return saved;
     }
