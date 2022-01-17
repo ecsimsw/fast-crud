@@ -9,16 +9,13 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.swing.*;
 
 @SpringBootApplication
 public class WinterApplication {
 
     public static void main(String[] args) {
-        SpringApplication application = new SpringApplication(WinterApplication.class);
-        ConfigurableApplicationContext ctx = application.run(args);
-
-        ByHandlingDispatcherServlet fw = (ByHandlingDispatcherServlet) ctx.getBean("byHandlingDispatcherServlet");
-        fw.addMapping();
+        SpringApplication.run(WinterApplication.class);
     }
 }
 
