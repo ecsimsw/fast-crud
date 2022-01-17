@@ -11,7 +11,7 @@ public interface CrudHandler {
 
     Object readById(HttpServletRequest request) throws Throwable;
 
-    Object update(HttpServletRequest request);
+    Object update(HttpServletRequest request) throws IllegalAccessException;
 
-    Object delete(HttpServletRequest request);
+    void delete(HttpServletRequest request);
 }
