@@ -34,6 +34,7 @@ public class CrudHandlerImpl implements CrudHandler {
             if (field.getName().equals("id")) {
                 field.setAccessible(true);
                 field.set(requestEntity, null);
+                break;
             }
         }
         return repository.save(requestEntity);
@@ -77,6 +78,7 @@ public class CrudHandlerImpl implements CrudHandler {
         repository.deleteById(id);
     }
 
+    // TODO :: NumberFormatException
     private Long getId(HttpServletRequest request) {
         final String requestURI = request.getRequestURI();
         final int indexOfId = requestURI.lastIndexOf('/') + 1;

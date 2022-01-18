@@ -6,7 +6,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@CRUD
+@CRUD(rootPath = "test")
 @Entity
 public class TestEntity {
 

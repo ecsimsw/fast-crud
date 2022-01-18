@@ -31,18 +31,29 @@ public class FastCrud {
     public void addMapping() {
         final String[] beanNamesForCRUD = context.getBeanNamesForAnnotation(CRUD.class);
         Arrays.stream(beanNamesForCRUD).forEach(name -> {
-            final JpaRepository repository = (JpaRepository) context.getBean(name + "Repository");
             final Class<?> aClass = context.getBean(name).getClass();
-            registerCrudMappings(name, new CrudHandlerImpl(repository, aClass));
+            final String rootPath = rootPath(aClass, name);
+            final CrudHandler crudHandler = crudHandler(name, aClass);
+            registerCrudMappings(rootPath, crudHandler);
         });
     }
 
-    private void registerCrudMappings(String name, CrudHandler crudHandler) {
-        register(api("/" + name, RequestMethod.POST), crudHandler, "create");
-        register(api("/" + name, RequestMethod.GET), crudHandler, "readAll");
-        register(api("/" + name + "/*", RequestMethod.GET), crudHandler, "readById");
-        register(api("/" + name + "/*", RequestMethod.PUT), crudHandler, "update");
-        register(api("/" + name + "/*", RequestMethod.DELETE), crudHandler, "delete");
+    private String rootPath(Class<?> aClass, String name) {
+        final String rootPath = aClass.getAnnotation(CRUD.class).rootPath().trim();
+        return rootPath.isBlank() ? name : rootPath;
+    }
+
+    private CrudHandler crudHandler(String name, Class<?> aClass) {
+        final JpaRepository repository = (JpaRepository) context.getBean(name + "Repository");
+        return new CrudHandlerImpl(repository, aClass);
+    }
+
+    private void registerCrudMappings(String rootPath, CrudHandler crudHandler) {
+        register(api(rootPath, RequestMethod.POST), crudHandler, "create");
+        register(api(rootPath, RequestMethod.GET), crudHandler, "readAll");
+        register(api(rootPath + "/*", RequestMethod.GET), crudHandler, "readById");
+        register(api(rootPath + "/*", RequestMethod.PUT), crudHandler, "update");
+        register(api(rootPath + "/*", RequestMethod.DELETE), crudHandler, "delete");
     }
 
     private void register(RequestMappingInfo getMappingInfo, CrudHandler crudHandler, String methodName) {

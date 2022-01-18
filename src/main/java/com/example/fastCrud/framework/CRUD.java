@@ -11,4 +11,6 @@ import org.springframework.stereotype.Component;
 @Retention(RUNTIME)
 @Component
 public @interface CRUD {
+
+    String rootPath() default "";
 }
