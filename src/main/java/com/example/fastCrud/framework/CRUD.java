@@ -1,11 +1,12 @@
 package com.example.fastCrud.framework;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import org.springframework.stereotype.Component;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target(TYPE)
 @Retention(RUNTIME)
@@ -13,4 +14,6 @@ import org.springframework.stereotype.Component;
 public @interface CRUD {
 
     String rootPath() default "";
+
+    CrudMethod[] exclude() default {};
 }

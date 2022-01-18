@@ -1,12 +1,14 @@
 package com.example.fastCrud.application.domain;
 
 import com.example.fastCrud.framework.CRUD;
+import com.example.fastCrud.framework.CrudMethod;
+
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@CRUD(rootPath = "test")
+@CRUD(rootPath = "test", exclude = {CrudMethod.CREATE, CrudMethod.DELETE})
 @Entity
 public class TestEntity {
 

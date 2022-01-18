@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.List;
 
 // TODO :: ISSUE on after Spring boot 2.6
 // java.lang.IllegalArgumentException: Expected lookupPath in request attribute "org.springframework.web.util.UrlPathHelper.PATH".
@@ -33,9 +34,14 @@ public class FastCrud {
         Arrays.stream(beanNamesForCRUD).forEach(name -> {
             final Class<?> aClass = context.getBean(name).getClass();
             final String rootPath = rootPath(aClass, name);
-            final CrudHandler crudHandler = crudHandler(name, aClass);
-            registerCrudMappings(rootPath, crudHandler);
+            final CrudHandler crudHandler = crudHandler(aClass, name);
+            final List<CrudMethod> excluded = excluded(aClass);
+            registerCrudMappings(rootPath, crudHandler, excluded);
         });
+    }
+
+    private List<CrudMethod> excluded(Class<?> aClass) {
+        return Arrays.asList(aClass.getAnnotation(CRUD.class).exclude());
     }
 
     private String rootPath(Class<?> aClass, String name) {
@@ -43,17 +49,25 @@ public class FastCrud {
         return rootPath.isBlank() ? name : rootPath;
     }
 
-    private CrudHandler crudHandler(String name, Class<?> aClass) {
+    private CrudHandler crudHandler(Class<?> aClass, String name) {
         final JpaRepository repository = (JpaRepository) context.getBean(name + "Repository");
         return new CrudHandlerImpl(repository, aClass);
     }
 
-    private void registerCrudMappings(String rootPath, CrudHandler crudHandler) {
-        register(api(rootPath, RequestMethod.POST), crudHandler, "create");
-        register(api(rootPath, RequestMethod.GET), crudHandler, "readAll");
-        register(api(rootPath + "/*", RequestMethod.GET), crudHandler, "readById");
-        register(api(rootPath + "/*", RequestMethod.PUT), crudHandler, "update");
-        register(api(rootPath + "/*", RequestMethod.DELETE), crudHandler, "delete");
+    private void registerCrudMappings(String rootPath, CrudHandler crudHandler, List<CrudMethod> excluded) {
+        if(!excluded.contains(CrudMethod.CREATE)) {
+            register(api(rootPath, RequestMethod.POST), crudHandler, "create");
+        }
+        if(!excluded.contains(CrudMethod.READ)) {
+            register(api(rootPath, RequestMethod.GET), crudHandler, "readAll");
+            register(api(rootPath + "/*", RequestMethod.GET), crudHandler, "readById");
+        }
+        if(!excluded.contains(CrudMethod.UPDATE)) {
+            register(api(rootPath + "/*", RequestMethod.PUT), crudHandler, "update");
+        }
+        if(!excluded.contains(CrudMethod.DELETE)) {
+            register(api(rootPath + "/*", RequestMethod.DELETE), crudHandler, "delete");
+        }
     }
 
     private void register(RequestMappingInfo getMappingInfo, CrudHandler crudHandler, String methodName) {
