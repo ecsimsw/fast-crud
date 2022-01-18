@@ -35,4 +35,10 @@ public class HttpHandlerUtils {
         }
         return stringBuilder.toString();
     }
+
+    public static String getLastSegment(HttpServletRequest request) {
+        final String requestURI = request.getRequestURI();
+        final int indexOfId = requestURI.lastIndexOf('/') + 1;
+        return requestURI.substring(indexOfId);
+    }
 }

@@ -1,7 +1,7 @@
 package com.example.fastCrud.framework;
 
 import com.example.fastCrud.framework.utils.HttpHandlerUtils;
-import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.example.fastCrud.framework.utils.ReflectionUtils;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.lang.reflect.Field;
 
 public class CrudHandlerImpl implements CrudHandler {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     static {
         OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
@@ -28,15 +28,9 @@ public class CrudHandlerImpl implements CrudHandler {
 
     @ResponseBody
     @Override
-    public Object create(HttpServletRequest request) throws IllegalAccessException {
+    public Object create(HttpServletRequest request) throws IllegalAccessException, NoSuchFieldException {
         final Object requestEntity = mapEntityFromBody(request);
-        for (Field field : requestEntity.getClass().getDeclaredFields()) {
-            if (field.getName().equals("id")) {
-                field.setAccessible(true);
-                field.set(requestEntity, null);
-                break;
-            }
-        }
+        ReflectionUtils.setFieldValue(requestEntity, "id", null);
         return repository.save(requestEntity);
     }
 
@@ -55,20 +49,16 @@ public class CrudHandlerImpl implements CrudHandler {
 
     @ResponseBody
     @Override
-    public Object update(HttpServletRequest request) throws IllegalAccessException {
+    public Object update(HttpServletRequest request) throws IllegalAccessException, NoSuchFieldException {
         final Long id = getId(request);
         final Object saved = repository.findById(id).orElseThrow();
         final Object other = mapEntityFromBody(request);
 
-        for (Field field : saved.getClass().getDeclaredFields()) {
-            if (field.getName().equals("id")) {
-                continue;
-            }
-            field.setAccessible(true);
-            field.set(saved, field.get(other));
-        }
+        ReflectionUtils.copyFields(other, saved);
+        ReflectionUtils.setFieldValue(saved, "id", id);
+
         repository.save(saved);
-        return other;
+        return saved;
     }
 
     @ResponseBody
@@ -80,9 +70,7 @@ public class CrudHandlerImpl implements CrudHandler {
 
     // TODO :: NumberFormatException
     private Long getId(HttpServletRequest request) {
-        final String requestURI = request.getRequestURI();
-        final int indexOfId = requestURI.lastIndexOf('/') + 1;
-        return Long.parseLong(requestURI.substring(indexOfId));
+        return Long.parseLong(HttpHandlerUtils.getLastSegment(request));
     }
 
     private Object mapEntityFromBody(HttpServletRequest request) {
