@@ -27,7 +27,7 @@ public class ByRegisteringServlet {
         final HttpServlet servlet = new HttpServlet() {
             @Override
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-                Object saved = repository.findById(1L).get();
+                Object saved = repository.findById(1L).orElseThrow();
                 resp.getOutputStream().print(saved.toString());
             }
         };

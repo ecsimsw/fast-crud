@@ -1,5 +1,6 @@
-package com.example.fastCrud.application;
+package com.example.fastCrud;
 
+import com.example.fastCrud.application.domain.FieldObject;
 import com.example.fastCrud.application.domain.TestEntity;
 import com.example.fastCrud.application.domain.TestEntityRepository;
 import org.springframework.boot.SpringApplication;
@@ -27,7 +28,7 @@ class SampleData {
 
     @PostConstruct
     public void setUp() {
-        testEntityRepository.save(new TestEntity("test1"));
-        testEntityRepository.save(new TestEntity("test2"));
+        testEntityRepository.save(new TestEntity("test1", new FieldObject("1")));
+        testEntityRepository.save(new TestEntity("test2", new FieldObject("3")));
     }
 }

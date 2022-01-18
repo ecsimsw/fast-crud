@@ -4,11 +4,11 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface CrudHandler {
 
-    Object create(HttpServletRequest request);
+    Object create(HttpServletRequest request) throws IllegalAccessException;
 
     Object readAll(HttpServletRequest request);
 
-    Object readById(HttpServletRequest request) throws Throwable;
+    Object readById(HttpServletRequest request);
 
     Object update(HttpServletRequest request) throws IllegalAccessException;
 

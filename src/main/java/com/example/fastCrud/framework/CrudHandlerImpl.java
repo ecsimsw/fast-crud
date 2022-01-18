@@ -1,6 +1,8 @@
 package com.example.fastCrud.framework;
 
 import com.example.fastCrud.framework.utils.HttpHandlerUtils;
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,6 +14,9 @@ import java.lang.reflect.Field;
 public class CrudHandlerImpl implements CrudHandler {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    static {
+        OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
     private final JpaRepository repository;
     private final Class<?> aClass;
@@ -23,8 +28,15 @@ public class CrudHandlerImpl implements CrudHandler {
 
     @ResponseBody
     @Override
-    public Object create(HttpServletRequest request) {
-        return repository.save(mapEntityFromBody(request));
+    public Object create(HttpServletRequest request) throws IllegalAccessException {
+        final Object requestEntity = mapEntityFromBody(request);
+        for (Field field : requestEntity.getClass().getDeclaredFields()) {
+            if (field.getName().equals("id")) {
+                field.setAccessible(true);
+                field.set(requestEntity, null);
+            }
+        }
+        return repository.save(requestEntity);
     }
 
     @ResponseBody

@@ -19,8 +19,8 @@ import java.util.Arrays;
 @Component
 public class FastCrud {
 
-    private ApplicationContext context;
-    private RequestMappingHandlerMapping requestMappingHandlerMapping;
+    private final ApplicationContext context;
+    private final RequestMappingHandlerMapping requestMappingHandlerMapping;
 
     public FastCrud(ApplicationContext context, RequestMappingHandlerMapping requestMappingHandlerMapping) {
         this.context = context;
@@ -39,8 +39,8 @@ public class FastCrud {
 
     private void registerCrudMappings(String name, CrudHandler crudHandler) {
         register(api("/" + name, RequestMethod.POST), crudHandler, "create");
-        register(api("/" + name + "/*", RequestMethod.GET), crudHandler, "readById");
         register(api("/" + name, RequestMethod.GET), crudHandler, "readAll");
+        register(api("/" + name + "/*", RequestMethod.GET), crudHandler, "readById");
         register(api("/" + name + "/*", RequestMethod.PUT), crudHandler, "update");
         register(api("/" + name + "/*", RequestMethod.DELETE), crudHandler, "delete");
     }
