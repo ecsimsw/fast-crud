@@ -1,1 +1,4 @@
-rootProject.name = 'winter'
+rootProject.name = 'fast-crud'
+
+include 'application'
+include 'framework'
