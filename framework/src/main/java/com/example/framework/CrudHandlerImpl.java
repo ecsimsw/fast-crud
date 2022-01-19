@@ -1,14 +1,17 @@
 package com.example.framework;
 
+import com.example.framework.exception.BadRequestException;
 import com.example.framework.utils.HttpHandlerUtils;
 import com.example.framework.utils.ReflectionUtils;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 public class CrudHandlerImpl implements CrudHandler {
 
@@ -26,60 +29,73 @@ public class CrudHandlerImpl implements CrudHandler {
         this.aClass = aClass;
     }
 
-    @ResponseBody
-    @Override
-    public Object create(HttpServletRequest request) throws IllegalAccessException, NoSuchFieldException {
-        final Object requestEntity = mapEntityFromBody(request);
-        ReflectionUtils.setFieldValue(requestEntity, "id", null);
-        return repository.save(requestEntity);
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<?> handleBadRequest(BadRequestException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
-    @ResponseBody
     @Override
-    public Object readAll(HttpServletRequest request) {
-        return repository.findAll();
+    public ResponseEntity<?> create(HttpServletRequest request) {
+        final Object entity = mapEntityFromBody(request);
+        ReflectionUtils.setFieldValue(entity, "id", null);
+        repository.save(entity);
+        return ResponseEntity.ok(entity);
     }
 
-    @ResponseBody
     @Override
-    public Object readById(HttpServletRequest request) {
+    public ResponseEntity<?> readAll(HttpServletRequest request) {
+        return ResponseEntity.ok(repository.findAll());
+    }
+
+    @Override
+    public ResponseEntity<?> readById(HttpServletRequest request) {
         final Long id = getId(request);
-        return repository.findById(id).orElseThrow();
+        final Object entity = getById(id);
+        return ResponseEntity.ok(entity);
     }
 
-    @ResponseBody
     @Override
-    public Object update(HttpServletRequest request) throws IllegalAccessException, NoSuchFieldException {
+    public ResponseEntity<?> update(HttpServletRequest request) {
         final Long id = getId(request);
-        final Object saved = repository.findById(id).orElseThrow();
+        final Object saved = getById(id);
         final Object other = mapEntityFromBody(request);
 
         ReflectionUtils.copyFields(other, saved);
         ReflectionUtils.setFieldValue(saved, "id", id);
 
         repository.save(saved);
-        return saved;
+        return ResponseEntity.ok(saved);
     }
 
-    @ResponseBody
     @Override
-    public void delete(HttpServletRequest request) {
+    public ResponseEntity<?> delete(HttpServletRequest request) {
         final Long id = getId(request);
         repository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
-    // TODO :: NumberFormatException
     private Long getId(HttpServletRequest request) {
-        return Long.parseLong(HttpHandlerUtils.getLastSegment(request));
+        try {
+            return Long.parseLong(HttpHandlerUtils.getLastSegment(request));
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("Id must be Long type : the last segment of path has to be a parsable long");
+        }
+    }
+
+    public Object getById(Long id) {
+        try {
+            return repository.findById(id).orElseThrow();
+        } catch (NoSuchElementException e) {
+            throw new BadRequestException("No value present");
+        }
     }
 
     private Object mapEntityFromBody(HttpServletRequest request) {
         try {
             final String body = HttpHandlerUtils.getBody(request);
             return OBJECT_MAPPER.readValue(body, aClass);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-            return null;
+        } catch (IOException e) {
+            throw new BadRequestException("The input JSON structure does not match structure expected for result type");
         }
     }
 }

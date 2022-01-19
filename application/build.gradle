@@ -13,10 +13,7 @@ repositories {
 }
 
 dependencies {
-    // Test library
-//    implementation project(':framework')
-    implementation files('framework-0.0.1-SNAPSHOT-plain.jar')
-    implementation fileTree(dir: 'libs', include: '*.jar')
+    implementation project(':framework')
 
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

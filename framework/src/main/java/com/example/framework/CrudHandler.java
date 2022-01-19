@@ -1,16 +1,19 @@
 package com.example.framework;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.http.ResponseEntity;
+
 import javax.servlet.http.HttpServletRequest;
 
 public interface CrudHandler {
 
-    Object create(HttpServletRequest request) throws IllegalAccessException, NoSuchFieldException;
+    ResponseEntity<?> create(HttpServletRequest request);
 
-    Object readAll(HttpServletRequest request);
+    ResponseEntity<?> readAll(HttpServletRequest request);
 
-    Object readById(HttpServletRequest request);
+    ResponseEntity<?> readById(HttpServletRequest request);
 
-    Object update(HttpServletRequest request) throws IllegalAccessException, NoSuchFieldException;
+    ResponseEntity<?> update(HttpServletRequest request);
 
-    void delete(HttpServletRequest request);
+    ResponseEntity<?> delete(HttpServletRequest request);
 }

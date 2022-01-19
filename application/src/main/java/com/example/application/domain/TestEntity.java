@@ -1,9 +1,6 @@
 package com.example.application.domain;
 
-//import com.example.framework.CRUD;
-//import com.example.framework.CrudMethod;
 import com.example.framework.CRUD;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
