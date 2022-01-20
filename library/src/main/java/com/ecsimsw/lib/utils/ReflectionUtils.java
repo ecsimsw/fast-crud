@@ -9,29 +9,34 @@ import java.util.Arrays;
 public class ReflectionUtils {
 
     public static void copyFields(Object src, Object des) {
+        for (Field field : src.getClass().getDeclaredFields()) {
+            setFieldValue(des, getFieldValue(src, field), field);
+        }
+    }
+
+    public static void setAnnotatedFieldValue(Object target, Class<? extends Annotation> annotationType, Object value) {
+        final Field field = getFieldForAnnotation(target, annotationType);
+        setFieldValue(target, value, field);
+    }
+
+    private static Object getFieldValue(Object src, Field field) {
         try {
-            for (Field field : src.getClass().getDeclaredFields()) {
-                field.setAccessible(true);
-                field.set(des, field.get(src));
-            }
+            return field.get(src);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
             throw new ReflectionException(e.getMessage());
         }
     }
 
-    public static void setFieldValue(Object target, String fieldName, Object value) {
+    private static void setFieldValue(Object target, Object value, Field field) {
         try {
-            final Field field = target.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
             field.set(target, value);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (IllegalAccessException e) {
             throw new ReflectionException(e.getMessage());
         }
     }
 
-    public static Field getFieldForAnnotation(Object target, Class<? extends Annotation> annotationType) {
+    private static Field getFieldForAnnotation(Object target, Class<? extends Annotation> annotationType) {
         return Arrays.stream(target.getClass().getDeclaredFields())
                 .filter(it -> it.isAnnotationPresent(annotationType))
                 .findAny()

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.Id;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -37,7 +38,7 @@ public class CrudHandlerImpl implements CrudHandler {
     @Override
     public ResponseEntity<?> create(HttpServletRequest request) {
         final Object entity = mapEntityFromBody(request);
-        ReflectionUtils.setFieldValue(entity, "id", null);
+        ReflectionUtils.setAnnotatedFieldValue(entity, Id.class, null);
         repository.save(entity);
         return ResponseEntity.ok(entity);
     }
@@ -61,7 +62,7 @@ public class CrudHandlerImpl implements CrudHandler {
         final Object other = mapEntityFromBody(request);
 
         ReflectionUtils.copyFields(other, saved);
-        ReflectionUtils.setFieldValue(saved, "id", id);
+        ReflectionUtils.setAnnotatedFieldValue(saved, Id.class, id);
 
         repository.save(saved);
         return ResponseEntity.ok(saved);
