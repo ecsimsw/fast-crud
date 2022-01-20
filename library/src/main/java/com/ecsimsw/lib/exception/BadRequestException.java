@@ -1,4 +1,4 @@
-package com.example.framework.exception;
+package com.ecsimsw.lib.exception;
 
 public class BadRequestException extends RuntimeException {
 

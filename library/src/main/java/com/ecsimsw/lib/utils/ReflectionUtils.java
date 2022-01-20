@@ -1,8 +1,10 @@
-package com.example.framework.utils;
+package com.ecsimsw.lib.utils;
 
-import com.example.framework.exception.ReflectionException;
+import com.ecsimsw.lib.exception.ReflectionException;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 public class ReflectionUtils {
 
@@ -27,5 +29,12 @@ public class ReflectionUtils {
             e.printStackTrace();
             throw new ReflectionException(e.getMessage());
         }
+    }
+
+    public static Field getFieldForAnnotation(Object target, Class<? extends Annotation> annotationType) {
+        return Arrays.stream(target.getClass().getDeclaredFields())
+                .filter(it -> it.isAnnotationPresent(annotationType))
+                .findAny()
+                .orElseThrow();
     }
 }

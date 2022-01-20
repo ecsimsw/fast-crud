@@ -1,6 +1,6 @@
 package com.example.application.domain;
 
-import com.example.framework.CRUD;
+import com.ecsimsw.lib.CRUD;
 
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;

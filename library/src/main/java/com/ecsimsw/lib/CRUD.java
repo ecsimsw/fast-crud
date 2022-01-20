@@ -1,4 +1,4 @@
-package com.example.framework;
+package com.ecsimsw.lib;
 
 import org.springframework.stereotype.Component;
 

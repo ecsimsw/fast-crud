@@ -1,8 +1,8 @@
-package com.example.framework;
+package com.ecsimsw.lib;
 
-import com.example.framework.exception.BadRequestException;
-import com.example.framework.utils.HttpHandlerUtils;
-import com.example.framework.utils.ReflectionUtils;
+import com.ecsimsw.lib.exception.BadRequestException;
+import com.ecsimsw.lib.utils.HttpHandlerUtils;
+import com.ecsimsw.lib.utils.ReflectionUtils;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.jpa.repository.JpaRepository;

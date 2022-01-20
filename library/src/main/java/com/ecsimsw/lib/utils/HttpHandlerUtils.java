@@ -1,4 +1,4 @@
-package com.example.framework.utils;
+package com.ecsimsw.lib.utils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
