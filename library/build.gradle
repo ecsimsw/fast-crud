@@ -4,7 +4,7 @@ plugins {
     id 'java'
 }
 
-group = 'com.example'
+group = 'com.ecsimsw.fastCrud'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
@@ -14,8 +14,6 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
@@ -31,7 +29,4 @@ dependencies {
 
 test {
     useJUnitPlatform()
-}
-
-task prepareKotlinBuildScriptModel {
 }
