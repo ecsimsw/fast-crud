@@ -1,4 +1,0 @@
-rootProject.name = 'fast-crud'
-
-include 'application'
-include 'library'
