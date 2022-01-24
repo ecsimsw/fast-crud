@@ -1,4 +1,4 @@
-package com.example.fastcrudjitpack.exception;
+package com.ecsimsw.fastcrud.exception;
 
 public class FastCrudException extends RuntimeException {
 

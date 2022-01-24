@@ -1,4 +1,4 @@
-package com.example.fastcrudjitpack;
+package com.ecsimsw.fastcrud;
 
 import org.springframework.http.ResponseEntity;
 

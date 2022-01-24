@@ -1,6 +1,6 @@
-package com.example.fastcrudjitpack.utils;
+package com.ecsimsw.fastcrud.utils;
 
-import com.example.fastcrudjitpack.exception.ReflectionException;
+import com.ecsimsw.fastcrud.exception.ReflectionException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -41,6 +41,6 @@ public class ReflectionUtils {
         return Arrays.stream(target.getClass().getDeclaredFields())
                 .filter(it -> it.isAnnotationPresent(annotationType))
                 .findAny()
-                .orElseThrow(()->new NoSuchElementException("No value present"));
+                .orElseThrow(() -> new NoSuchElementException("No value present"));
     }
 }

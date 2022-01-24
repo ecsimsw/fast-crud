@@ -1,4 +1,4 @@
-package com.example.fastcrudjitpack.utils;
+package com.ecsimsw.fastcrud.utils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;

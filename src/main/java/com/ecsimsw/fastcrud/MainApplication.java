@@ -1,4 +1,4 @@
-package com.example.fastcrudjitpack;
+package com.ecsimsw.fastcrud;
 
 public class MainApplication {
 

@@ -1,7 +1,7 @@
-package com.example.fastcrudjitpack;
+package com.ecsimsw.fastcrud;
 
-import com.example.fastcrudjitpack.exception.FastCrudException;
-import com.example.fastcrudjitpack.exception.ReflectionException;
+import com.ecsimsw.fastcrud.exception.FastCrudException;
+import com.ecsimsw.fastcrud.exception.ReflectionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.Repository;

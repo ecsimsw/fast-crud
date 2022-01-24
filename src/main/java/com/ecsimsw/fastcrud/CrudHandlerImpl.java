@@ -1,8 +1,8 @@
-package com.example.fastcrudjitpack;
+package com.ecsimsw.fastcrud;
 
-import com.example.fastcrudjitpack.exception.BadRequestException;
-import com.example.fastcrudjitpack.utils.HttpHandlerUtils;
-import com.example.fastcrudjitpack.utils.ReflectionUtils;
+import com.ecsimsw.fastcrud.exception.BadRequestException;
+import com.ecsimsw.fastcrud.utils.HttpHandlerUtils;
+import com.ecsimsw.fastcrud.utils.ReflectionUtils;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.jpa.repository.JpaRepository;
