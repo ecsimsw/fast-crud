@@ -18,9 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// TODO :: ISSUE on after Spring boot 2.6
-// java.lang.IllegalArgumentException: Expected lookupPath in request attribute "org.springframework.web.util.UrlPathHelper.PATH".
-
 @Component
 public class FastCrud {
 
@@ -67,17 +64,18 @@ public class FastCrud {
                 .collect(Collectors.toList());
     }
 
-    private CrudHandler crudHandler(String beanName, Class<?> aClass) {
-        final JpaRepository repositoryBean = repositoryBean(beanName);
-        return new CrudHandlerImpl(repositoryBean, aClass);
+    private CrudHandler crudHandler(String entityName, Class<?> aClass) {
+        final JpaRepository jpaRepository = repositoryBean(entityName, aClass.getAnnotation(CRUD.class).repositoryBean());
+        return new CrudHandlerImpl(jpaRepository, aClass);
     }
 
-    private JpaRepository repositoryBean(String beanName) {
-        final Object repository = context.getBean(beanName + "Repository");
-        if (repository instanceof Repository) {
+    private JpaRepository repositoryBean(String entityName, String repositoryBean) {
+        final String repoBeanName = repositoryBean.trim().isEmpty() ? entityName + "Repository" : repositoryBean;
+        final Object repository = context.getBean(repoBeanName);
+        if (repository instanceof JpaRepository) {
             return (JpaRepository) repository;
         }
-        throw new FastCrudException("You need JpaRepository bean, name with \'" + beanName + "Repository\'");
+        throw new FastCrudException("You need JpaRepository bean, name with \'" + repoBeanName);
     }
 
     private void registerCrudMappings(String rootPath, List<CrudMethod> methods, CrudHandler crudHandler) {

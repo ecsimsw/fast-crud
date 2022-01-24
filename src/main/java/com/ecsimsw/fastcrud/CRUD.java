@@ -16,4 +16,6 @@ public @interface CRUD {
     String rootPath() default "";
 
     CrudMethod[] exclude() default {};
+
+    String repositoryBean() default "";
 }
