@@ -1,5 +1,7 @@
 # fast-crud
-Automatic creation of basic CRUD API of Spring boot and JPA project.
+Automatic creation of simple CRUD API of Spring boot and JPA project.
+
+<br>
 
 ## How to use
 
@@ -10,7 +12,6 @@ Automatic creation of basic CRUD API of Spring boot and JPA project.
 
  ``` groovy
 repositories {
-    ...
     maven { url 'https://jitpack.io' }
 }
 ```
@@ -22,12 +23,9 @@ dependencies {
 ```
 </details>
 
-<br>
-
 <details>
 <summary>Maven (pom.xml)</summary>
-
- - Maven (pom.xml)
+ 
 ``` xml
 <repositories>
     <repository>
@@ -79,9 +77,7 @@ public interface SampleRepository extends JpaRepository<Sample, Long> {}
 
 <br>
 
-<details>
-<summary>Example</summary> 
-
+#### Step 5. Example
 ``` java
 @CRUD
 @Entity
@@ -126,13 +122,12 @@ public interface SampleRepository extends JpaRepository<Sample, Long> {}
 [GET] localhost:8080/sample/1
 [DELETE] localhost:8080/sample/1
 ```
-</details>
 
 <br>
 
 ## Additional features
 
-1. Repository name
+#### Repository name
 
 You can set your repository bean name in @CRUD with `repositoryBean` parameter.
 
@@ -144,7 +139,9 @@ You can set your repository bean name in @CRUD with `repositoryBean` parameter.
 public interface AnotherName extends JpaRepository<Sample, Long> {}
 ```
 
-2. API root path
+<br>
+
+#### API root path
 
 You can set your api `root path`  
 
@@ -157,7 +154,9 @@ You can set your api `root path`
 /anotherRoot/{id} 
 ```
 
-3. Exclude method
+<br>
+
+#### Exclude method
 
 Method can be excluded in @CRUD with `exclude` parameter.
 
