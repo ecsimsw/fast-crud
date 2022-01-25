@@ -1,5 +1,5 @@
 package com.ecsimsw.fastcrud;
 
-public enum CrudMethod {
+public enum CrudType {
     CREATE, READ, UPDATE, DELETE
 }

@@ -4,8 +4,8 @@ import com.ecsimsw.fastcrud.exception.ReflectionException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 
 public class ReflectionUtils {
 
@@ -22,6 +22,7 @@ public class ReflectionUtils {
 
     private static Object getFieldValue(Object src, Field field) {
         try {
+            field.setAccessible(true);
             return field.get(src);
         } catch (IllegalAccessException e) {
             throw new ReflectionException(e.getMessage());
@@ -41,6 +42,14 @@ public class ReflectionUtils {
         return Arrays.stream(target.getClass().getDeclaredFields())
                 .filter(it -> it.isAnnotationPresent(annotationType))
                 .findAny()
-                .orElseThrow(() -> new NoSuchElementException("No value present"));
+                .orElseThrow(() -> new ReflectionException("No annotation present"));
+    }
+
+    public static Method getMethodOf(Object target, String methodName, Class<?>... parameterTypes) {
+        try {
+            return target.getClass().getMethod(methodName, parameterTypes);
+        } catch (NoSuchMethodException e) {
+            throw new ReflectionException(e.getMessage());
+        }
     }
 }

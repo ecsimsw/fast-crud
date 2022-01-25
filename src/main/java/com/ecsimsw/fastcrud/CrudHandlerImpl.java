@@ -36,7 +36,7 @@ public class CrudHandlerImpl implements CrudHandler {
     }
 
     @Override
-    public ResponseEntity<?> create(HttpServletRequest request) {
+    public ResponseEntity<?> save(HttpServletRequest request) {
         final Object entity = mapEntityFromBody(request);
         ReflectionUtils.setAnnotatedFieldValue(entity, Id.class, null);
         repository.save(entity);
@@ -44,20 +44,20 @@ public class CrudHandlerImpl implements CrudHandler {
     }
 
     @Override
-    public ResponseEntity<?> readAll(HttpServletRequest request) {
+    public ResponseEntity<?> findAll(HttpServletRequest request) {
         return ResponseEntity.ok(repository.findAll());
     }
 
     @Override
-    public ResponseEntity<?> readById(HttpServletRequest request) {
-        final Long id = getId(request);
+    public ResponseEntity<?> findById(HttpServletRequest request) {
+        final Long id = requestId(request);
         final Object entity = getById(id);
         return ResponseEntity.ok(entity);
     }
 
     @Override
     public ResponseEntity<?> update(HttpServletRequest request) {
-        final Long id = getId(request);
+        final Long id = requestId(request);
         final Object saved = getById(id);
         final Object other = mapEntityFromBody(request);
 
@@ -70,12 +70,13 @@ public class CrudHandlerImpl implements CrudHandler {
 
     @Override
     public ResponseEntity<?> delete(HttpServletRequest request) {
-        final Long id = getId(request);
-        repository.deleteById(id);
+        final Long id = requestId(request);
+        final Object object = getById(id);
+        repository.delete(object);
         return ResponseEntity.noContent().build();
     }
 
-    private Long getId(HttpServletRequest request) {
+    private Long requestId(HttpServletRequest request) {
         try {
             return Long.parseLong(HttpHandlerUtils.getLastSegment(request));
         } catch (NumberFormatException e) {

@@ -6,11 +6,11 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface CrudHandler {
 
-    ResponseEntity<?> create(HttpServletRequest request);
+    ResponseEntity<?> save(HttpServletRequest request);
 
-    ResponseEntity<?> readAll(HttpServletRequest request);
+    ResponseEntity<?> findAll(HttpServletRequest request);
 
-    ResponseEntity<?> readById(HttpServletRequest request);
+    ResponseEntity<?> findById(HttpServletRequest request);
 
     ResponseEntity<?> update(HttpServletRequest request);
 
