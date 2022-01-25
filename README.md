@@ -65,7 +65,7 @@ public interface SampleRepository extends JpaRepository<Sample, Long> {}
 
 <br>
 
-#### Step 4. That's it. Then, you just made basic CRUD http api bellow.
+#### Step 4. That's it. You just made basic CRUD http api bellow.
 
 | |HttpMethod|Path|RequestBody (Json)|
 |----|------|----|-----|
