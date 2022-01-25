@@ -70,8 +70,8 @@ public interface SampleRepository extends JpaRepository<Sample, Long> {}
 | |HttpMethod|Path|RequestBody (Json)|
 |----|------|----|-----|
 |save|POST|/{entityName}|O|
-|findById|GET|/{entityName}/{id}|X|
 |findAll|GET|/{entityName}|X|
+|findById|GET|/{entityName}/{id}|X|
 |update|PUT|/{entityName}/{id}|O|
 |delete|DELETE|/{entityName}/{id}|X|
 
