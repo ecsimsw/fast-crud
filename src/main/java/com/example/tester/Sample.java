@@ -1,6 +1,5 @@
 package com.example.tester;
 
-
 import com.ecsimsw.fastcrud.CRUD;
 
 import javax.persistence.Entity;
@@ -9,20 +8,26 @@ import javax.persistence.Id;
 
 @CRUD
 @Entity
-public class TestEntity {
+public class Sample {
 
     @GeneratedValue
     @Id
     private Long id;
 
-    public TestEntity() {
+    private String name;
+
+    public Sample() {
     }
 
-    public TestEntity(Long id) {
-        this.id = id;
+    public Sample(String name) {
+        this.name = name;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }

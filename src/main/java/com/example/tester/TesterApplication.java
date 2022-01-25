@@ -20,5 +20,4 @@ public class TesterApplication {
             System.out.println(info + " " + handlerMethods.get(info));
         }
     }
-
 }
