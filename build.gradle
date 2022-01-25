@@ -24,6 +24,9 @@ dependencies {
 
     implementation 'com.h2database:h2'
     implementation 'com.github.ecsimsw:fast-crud:1884ef8e1d'
+
+//    implementation files('fast-crud-0.0.1-SNAPSHOT.jar')
+//    implementation fileTree(dir: 'libs', include: '*.jar')
 }
 
 test {

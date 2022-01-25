@@ -1,6 +1,7 @@
 package com.example.tester;
 
-import com.example.fastcrudjitpack.CRUD;
+
+import com.ecsimsw.fastcrud.CRUD;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
