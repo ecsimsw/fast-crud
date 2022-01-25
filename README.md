@@ -18,7 +18,7 @@ repositories {
 
  ``` groovy
 dependencies {
-    implementation 'com.github.ecsimsw:fast-crud:Tag'
+    implementation 'com.github.ecsimsw:fast-crud:0.0.1'
 }
 ```
 </details>
@@ -38,7 +38,7 @@ dependencies {
 <dependency>
     <groupId>com.github.ecsimsw</groupId>
     <artifactId>fast-crud</artifactId>
-    <version>Tag</version>
+    <version>0.0.1</version>
 </dependency>
 ```
 
