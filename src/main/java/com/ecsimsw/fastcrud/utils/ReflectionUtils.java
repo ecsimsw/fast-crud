@@ -20,19 +20,19 @@ public class ReflectionUtils {
         setFieldValue(target, value, field);
     }
 
-    private static Object getFieldValue(Object src, Field field) {
+    private static void setFieldValue(Object target, Object value, Field field) {
         try {
             field.setAccessible(true);
-            return field.get(src);
+            field.set(target, value);
         } catch (IllegalAccessException e) {
             throw new ReflectionException(e.getMessage());
         }
     }
 
-    private static void setFieldValue(Object target, Object value, Field field) {
+    private static Object getFieldValue(Object src, Field field) {
         try {
             field.setAccessible(true);
-            field.set(target, value);
+            return field.get(src);
         } catch (IllegalAccessException e) {
             throw new ReflectionException(e.getMessage());
         }

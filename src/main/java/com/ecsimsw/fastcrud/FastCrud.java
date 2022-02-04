@@ -27,45 +27,43 @@ public class FastCrud {
     public void addMapping() {
         final String[] beanNamesForCRUD = context.getBeanNamesForAnnotation(CRUD.class);
         Arrays.stream(beanNamesForCRUD).forEach(entityName -> {
-            final Class<?> aClass = crudClass(entityName);
-            final CRUD crud = aClass.getAnnotation(CRUD.class);
-            final String rootPath = rootPath(crud, entityName);
-            final List<HandlingMethod> methods = mappingMethods(crud);
-            final JpaRepository repository = jpaRepositoryBean(crud, entityName);
-            register(aClass, rootPath, methods, repository);
+            final Object bean = findEntityBean(entityName);
+            final String rootPath = rootPath(bean, entityName);
+            final List<HandlingMethod> methods = mappingMethods(bean);
+            final JpaRepository repository = jpaRepositoryBean(bean, entityName);
+            register(bean, rootPath, methods, repository);
         });
     }
 
-    private void register(Class<?> aClass, String rootPath, List<HandlingMethod> methods, JpaRepository repository) {
-        final CrudHandlerImpl crudHandler = new CrudHandlerImpl(repository, aClass);
+    private Object findEntityBean(String beanName) {
+        final Object bean = context.getBean(beanName);
+        if (!bean.getClass().isAnnotationPresent(Entity.class)) {
+            throw new FastCrudException("CRUD annotation must be with @Entity annotation");
+        }
+        return bean;
+    }
+
+    private void register(Object bean, String rootPath, List<HandlingMethod> methods, JpaRepository repository) {
+        final CrudHandlerImpl crudHandler = new CrudHandlerImpl(repository, bean.getClass());
         methods.forEach(it -> it.register(handlerMapping, rootPath, crudHandler));
     }
 
-    private Class<?> crudClass(String entityName) {
-        final Class<?> aClass = context.getBean(entityName).getClass();
-        validateEntity(aClass);
-        return aClass;
-    }
-
-    private void validateEntity(Class<?> aClass) {
-        if (!aClass.isAnnotationPresent(Entity.class)) {
-            throw new FastCrudException("Need Entity annotation");
-        }
-    }
-
-    private String rootPath(CRUD crud, String entityName) {
+    private String rootPath(Object bean, String entityName) {
+        final CRUD crud = crudAnnotation(bean);
         final String rootPath = crud.rootPath().trim();
         return rootPath.isEmpty() ? entityName : rootPath;
     }
 
-    private List<HandlingMethod> mappingMethods(CRUD crud) {
+    private List<HandlingMethod> mappingMethods(Object bean) {
+        final CRUD crud = crudAnnotation(bean);
         final List<CrudType> excluded = Arrays.asList(crud.exclude());
         return Arrays.stream(HandlingMethod.values())
                 .filter(it -> !excluded.contains(it.getCrudType()))
                 .collect(Collectors.toList());
     }
 
-    private JpaRepository jpaRepositoryBean(CRUD crud, String entityName) {
+    private JpaRepository jpaRepositoryBean(Object bean, String entityName) {
+        final CRUD crud = crudAnnotation(bean);
         final String repositoryBeanName = repositoryBeanName(crud, entityName);
         final Object repository = context.getBean(repositoryBeanName);
         if (repository instanceof JpaRepository) {
@@ -74,8 +72,13 @@ public class FastCrud {
         throw new FastCrudException("You need JpaRepository bean, name with " + repositoryBeanName);
     }
 
-    private String repositoryBeanName(CRUD crud, String entityName) {
+    private String repositoryBeanName(Object bean, String entityName) {
+        final CRUD crud = crudAnnotation(bean);
         final String repoBeanName = crud.repositoryBean().trim();
         return repoBeanName.isEmpty() ? entityName + "Repository" : repoBeanName;
+    }
+
+    private CRUD crudAnnotation(Object bean) {
+        return bean.getClass().getAnnotation(CRUD.class);
     }
 }

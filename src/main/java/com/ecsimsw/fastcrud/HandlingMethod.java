@@ -1,20 +1,19 @@
 package com.ecsimsw.fastcrud;
 
 import com.ecsimsw.fastcrud.utils.ReflectionUtils;
+import java.lang.reflect.Method;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
-
 public enum HandlingMethod {
 
-    SAVE(CrudType.CREATE, RequestPath.post(), "save"),
-    FIND_ALL(CrudType.READ, RequestPath.get(), "findAll"),
-    FIND_BY_ID(CrudType.READ, RequestPath.get().additionalPath("/*"), "findById"),
-    UPDATE(CrudType.UPDATE, RequestPath.put().additionalPath("/*"), "update"),
-    DELETE(CrudType.DELETE, RequestPath.delete().additionalPath("/*"), "delete");
+    SAVE(CrudType.CREATE, new RequestPath(RequestMethod.POST), "save"),
+    FIND_ALL(CrudType.READ, new RequestPath(RequestMethod.GET), "findAll"),
+    FIND_BY_ID(CrudType.READ, new RequestPath(RequestMethod.GET, "/*"), "findById"),
+    UPDATE(CrudType.UPDATE, new RequestPath(RequestMethod.PUT, "/*"), "update"),
+    DELETE(CrudType.DELETE, new RequestPath(RequestMethod.DELETE, "/*"), "delete");
 
     private final CrudType crudType;
     private final RequestPath requestPath;
@@ -42,22 +41,6 @@ class RequestPath {
     private final RequestMethod requestMethod;
     private final String additionalPath;
 
-    public static RequestPath post() {
-        return new RequestPath(RequestMethod.POST);
-    }
-
-    public static RequestPath get() {
-        return new RequestPath(RequestMethod.GET);
-    }
-
-    public static RequestPath put() {
-        return new RequestPath(RequestMethod.PUT);
-    }
-
-    public static RequestPath delete() {
-        return new RequestPath(RequestMethod.DELETE);
-    }
-
     public RequestPath(RequestMethod requestMethod, String additionalPath) {
         this.requestMethod = requestMethod;
         this.additionalPath = additionalPath;
@@ -65,10 +48,6 @@ class RequestPath {
 
     public RequestPath(RequestMethod requestMethod) {
         this(requestMethod, "");
-    }
-
-    public RequestPath additionalPath(String additionalPath) {
-        return new RequestPath(this.requestMethod, additionalPath);
     }
 
     public RequestMappingInfo getRequestMappingInfo(String rootPath) {

@@ -22,15 +22,9 @@ public class HttpHandlerUtils {
                     stringBuilder.append(charBuffer, 0, bytesRead);
                 }
             }
-        } catch (IOException ex) {
-            throw ex;
         } finally {
             if (bufferedReader != null) {
-                try {
-                    bufferedReader.close();
-                } catch (IOException ex) {
-                    throw ex;
-                }
+                bufferedReader.close();
             }
         }
         return stringBuilder.toString();
