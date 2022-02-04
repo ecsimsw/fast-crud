@@ -1,13 +1,13 @@
 package com.ecsimsw.fastcrud;
 
 import com.ecsimsw.fastcrud.exception.FastCrudException;
+import javax.persistence.Entity;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.Entity;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,13 +26,17 @@ public class FastCrud {
     @PostConstruct
     public void addMapping() {
         final String[] beanNamesForCRUD = context.getBeanNamesForAnnotation(CRUD.class);
-        Arrays.stream(beanNamesForCRUD).forEach(entityName -> {
-            final Object bean = findEntityBean(entityName);
-            final String rootPath = rootPath(bean, entityName);
-            final List<HandlingMethod> methods = mappingMethods(bean);
-            final JpaRepository repository = jpaRepositoryBean(bean, entityName);
-            register(bean, rootPath, methods, repository);
-        });
+        Arrays.stream(beanNamesForCRUD).forEach(entity -> register(entity));
+    }
+
+    private void register(String entityName) {
+        final Object bean = findEntityBean(entityName);
+        final String rootPath = rootPath(bean, entityName);
+        final List<HandlingMethod> methods = mappingMethods(bean);
+        final JpaRepository repository = jpaRepositoryBean(bean, entityName);
+
+        final CrudHandlerImpl crudHandler = new CrudHandlerImpl(repository, bean.getClass());
+        methods.forEach(it -> it.register(handlerMapping, rootPath, crudHandler));
     }
 
     private Object findEntityBean(String beanName) {
@@ -41,11 +45,6 @@ public class FastCrud {
             throw new FastCrudException("CRUD annotation must be with @Entity annotation");
         }
         return bean;
-    }
-
-    private void register(Object bean, String rootPath, List<HandlingMethod> methods, JpaRepository repository) {
-        final CrudHandlerImpl crudHandler = new CrudHandlerImpl(repository, bean.getClass());
-        methods.forEach(it -> it.register(handlerMapping, rootPath, crudHandler));
     }
 
     private String rootPath(Object bean, String entityName) {
@@ -72,8 +71,7 @@ public class FastCrud {
         throw new FastCrudException("You need JpaRepository bean, name with " + repositoryBeanName);
     }
 
-    private String repositoryBeanName(Object bean, String entityName) {
-        final CRUD crud = crudAnnotation(bean);
+    private String repositoryBeanName(CRUD crud, String entityName) {
         final String repoBeanName = crud.repositoryBean().trim();
         return repoBeanName.isEmpty() ? entityName + "Repository" : repoBeanName;
     }
