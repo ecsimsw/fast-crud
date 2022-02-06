@@ -22,7 +22,7 @@ public class SampleControllerTest {
     ApplicationContext applicationContext;
 
     @Test
-    public void findOne() throws Exception {
+    public void findAll() throws Exception {
         mockMvc.perform(get("/testEntity"))
                 .andExpect(status().isOk())
                 .andDo(print());

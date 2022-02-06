@@ -23,11 +23,11 @@ public class CrudHandlerImpl implements CrudHandler {
     }
 
     private final JpaRepository repository;
-    private final Class<?> aClass;
+    private final Class<?> entityType;
 
-    public CrudHandlerImpl(JpaRepository repository, Class<?> aClass) {
+    public CrudHandlerImpl(JpaRepository repository, Class<?> entityType) {
         this.repository = repository;
-        this.aClass = aClass;
+        this.entityType = entityType;
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -84,7 +84,7 @@ public class CrudHandlerImpl implements CrudHandler {
         }
     }
 
-    public Object getById(Long id) {
+    private Object getById(Long id) {
         try {
             return repository.findById(id).get();
         } catch (NoSuchElementException e) {
@@ -95,7 +95,7 @@ public class CrudHandlerImpl implements CrudHandler {
     private Object mapEntityFromBody(HttpServletRequest request) {
         try {
             final String body = HttpHandlerUtils.getBody(request);
-            return OBJECT_MAPPER.readValue(body, aClass);
+            return OBJECT_MAPPER.readValue(body, entityType);
         } catch (IOException e) {
             throw new BadRequestException("The input JSON structure does not match structure expected for result type");
         }

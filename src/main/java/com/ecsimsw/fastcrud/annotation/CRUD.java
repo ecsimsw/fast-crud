@@ -1,4 +1,4 @@
-package com.ecsimsw.fastcrud;
+package com.ecsimsw.fastcrud.annotation;
 
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ public @interface CRUD {
 
     String rootPath() default "";
 
-    CrudType[] exclude() default {};
+    CrudType[] excludeType() default {};
 
     String repositoryBean() default "";
 }

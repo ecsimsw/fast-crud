@@ -1,6 +1,6 @@
 package com.ecsimsw.fastcrud.sample;
 
-import com.ecsimsw.fastcrud.CRUD;
+import com.ecsimsw.fastcrud.annotation.CRUD;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
