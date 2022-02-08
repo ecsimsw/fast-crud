@@ -1,4 +1,4 @@
-package com.ecsimsw.fastcrud;
+package com.ecsimsw.fastcrud.handler;
 
 import com.ecsimsw.fastcrud.exception.BadRequestException;
 import com.ecsimsw.fastcrud.utils.HttpHandlerUtils;
@@ -22,8 +22,8 @@ public class CrudHandlerImpl implements CrudHandler {
         OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    private final JpaRepository repository;
-    private final Class<?> entityType;
+    protected final JpaRepository repository;
+    protected final Class<?> entityType;
 
     public CrudHandlerImpl(JpaRepository repository, Class<?> entityType) {
         this.repository = repository;

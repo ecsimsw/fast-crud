@@ -3,6 +3,8 @@ package com.ecsimsw.fastcrud;
 import com.ecsimsw.fastcrud.annotation.CRUD;
 import com.ecsimsw.fastcrud.annotation.CrudType;
 import com.ecsimsw.fastcrud.exception.FastCrudException;
+import com.ecsimsw.fastcrud.handler.CrudHandler;
+import com.ecsimsw.fastcrud.handler.CrudHandlerImpl;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +24,8 @@ public class TargetEntity {
         this.beanName = beanName;
         this.type = entityBean.getClass();
     }
+
+    // fast-crud
 
     public void register(RequestMappingHandlerMapping handlerMapping, JpaRepository repository) {
         handlingMethods().forEach(it -> {

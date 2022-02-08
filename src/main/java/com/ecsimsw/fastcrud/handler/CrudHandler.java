@@ -1,4 +1,4 @@
-package com.ecsimsw.fastcrud;
+package com.ecsimsw.fastcrud.handler;
 
 import org.springframework.http.ResponseEntity;
 

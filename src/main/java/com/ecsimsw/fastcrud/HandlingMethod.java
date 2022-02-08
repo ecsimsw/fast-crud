@@ -1,6 +1,8 @@
 package com.ecsimsw.fastcrud;
 
 import com.ecsimsw.fastcrud.annotation.CrudType;
+import com.ecsimsw.fastcrud.crudHandlers.FindAllHandler;
+import com.ecsimsw.fastcrud.handler.CrudHandler;
 import com.ecsimsw.fastcrud.utils.ReflectionUtils;
 import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
@@ -10,26 +12,26 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 public enum HandlingMethod {
 
-    SAVE(CrudType.CREATE, "save", RequestMethod.POST),
-    FIND_ALL(CrudType.READ, "findAll", RequestMethod.GET),
-    FIND_BY_ID(CrudType.READ, "findById", RequestMethod.GET, "/*"),
-    UPDATE(CrudType.UPDATE, "update", RequestMethod.PUT, "/*"),
-    DELETE(CrudType.DELETE, "delete", RequestMethod.DELETE, "/*");
+    SAVE(CrudType.CREATE, FindAllHandler.class, RequestMethod.POST),
+    FIND_ALL(CrudType.READ, FindAllHandler.class, RequestMethod.GET),
+    FIND_BY_ID(CrudType.READ, FindAllHandler.class, RequestMethod.GET, "/*"),
+    UPDATE(CrudType.UPDATE, FindAllHandler.class, RequestMethod.PUT, "/*"),
+    DELETE(CrudType.DELETE, FindAllHandler.class, RequestMethod.DELETE, "/*");
 
     private final CrudType crudType;
-    private final String methodName;
+    private final Class<?> handlerType;
     private final RequestMethod requestMethod;
     private final String additionalPath;
 
-    HandlingMethod(CrudType crudType, String methodName, RequestMethod requestMethod, String additionalPath) {
+    HandlingMethod(CrudType crudType, Class<?> handlerType, RequestMethod requestMethod, String additionalPath) {
         this.crudType = crudType;
-        this.methodName = methodName;
+        this.handlerType = handlerType;
         this.requestMethod = requestMethod;
         this.additionalPath = additionalPath;
     }
 
-    HandlingMethod(CrudType crudType, String methodName, RequestMethod requestMethod) {
-        this(crudType, methodName, requestMethod, "");
+    HandlingMethod(CrudType crudType, Class<?> handlerType, RequestMethod requestMethod) {
+        this(crudType, handlerType, requestMethod, "");
     }
 
     public void register(RequestMappingHandlerMapping handlerMapping, String rootPath, CrudHandler crudHandler) {
