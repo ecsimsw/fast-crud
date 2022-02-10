@@ -1,4 +1,4 @@
-package com.ecsimsw.fastcrud.crudHandlers;
+package com.ecsimsw.fastcrud.handler;
 
 import com.ecsimsw.fastcrud.exception.BadRequestException;
 import com.ecsimsw.fastcrud.utils.HttpHandlerUtils;
@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public abstract class CrudHandler implements ICrudHandler{
+public abstract class CrudHandlerAbst implements CrudHandler {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -20,7 +20,7 @@ public abstract class CrudHandler implements ICrudHandler{
     protected final JpaRepository repository;
     protected final Class<?> entityType;
 
-    public CrudHandler(JpaRepository repository, Class<?> entityType) {
+    public CrudHandlerAbst(JpaRepository repository, Class<?> entityType) {
         this.repository = repository;
         this.entityType = entityType;
     }

@@ -2,9 +2,8 @@ package com.ecsimsw.fastcrud;
 
 import com.ecsimsw.fastcrud.annotation.CRUD;
 import com.ecsimsw.fastcrud.annotation.CrudType;
+import com.ecsimsw.fastcrud.handler.HandlerInfo;
 import com.ecsimsw.fastcrud.exception.FastCrudException;
-import com.ecsimsw.fastcrud.handler.CrudHandler;
-import com.ecsimsw.fastcrud.handler.CrudHandlerImpl;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,20 +24,17 @@ public class TargetEntity {
         this.type = entityBean.getClass();
     }
 
-    // fast-crud
-
     public void register(RequestMappingHandlerMapping handlerMapping, JpaRepository repository) {
         handlingMethods().forEach(it -> {
-            final String rootPath = rootPath();
-            final CrudHandler crudHandler = new CrudHandlerImpl(repository, type);
-            it.register(handlerMapping, rootPath, crudHandler);
+            final HandlerInfo info = it.handlerInfo(rootPath(), repository, type);
+            handlerMapping.registerMapping(info.requestMappingInfo(), info.handler(), info.method());
         });
     }
 
-    private List<HandlingMethod> handlingMethods() {
+    private List<Handling> handlingMethods() {
         final List<CrudType> excluded = Arrays.asList(crud().excludeType());
-        return Arrays.stream(HandlingMethod.values())
-                .filter(it -> !excluded.contains(it.getCrudType()))
+        return Arrays.stream(Handling.values())
+                .filter(it -> !excluded.contains(it.crudType()))
                 .collect(Collectors.toList());
     }
 

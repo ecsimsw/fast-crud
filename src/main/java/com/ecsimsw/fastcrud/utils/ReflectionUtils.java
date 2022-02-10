@@ -1,8 +1,8 @@
 package com.ecsimsw.fastcrud.utils;
 
 import com.ecsimsw.fastcrud.exception.ReflectionException;
-
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -45,11 +45,18 @@ public class ReflectionUtils {
                 .orElseThrow(() -> new ReflectionException("No annotation present"));
     }
 
-    public static Method getMethodOf(Object target, String methodName, Class<?>... parameterTypes) {
+    public static Constructor<?> getConstructorOf(Class<?> targetClass, Class<?>... constructorArgs) {
         try {
-            return target.getClass().getMethod(methodName, parameterTypes);
+            return targetClass.getConstructor(constructorArgs);
         } catch (NoSuchMethodException e) {
             throw new ReflectionException(e.getMessage());
         }
+    }
+
+    public static Method getAnnotatedMethod(Object target, Class<? extends Annotation> annotationClass) {
+        return Arrays.stream(target.getClass().getDeclaredMethods())
+                .filter(it -> it.isAnnotationPresent(annotationClass))
+                .findAny()
+                .orElseThrow(() -> new ReflectionException("No annotation present"));
     }
 }
