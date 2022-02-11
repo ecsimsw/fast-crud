@@ -1,11 +1,15 @@
-package com.ecsimsw.fastcrud;
+package com.ecsimsw.fastcrud.handler;
 
 import com.ecsimsw.fastcrud.annotation.CrudType;
+import com.ecsimsw.fastcrud.handler.DeleteHandler;
 import com.ecsimsw.fastcrud.handler.FindAllHandler;
+import com.ecsimsw.fastcrud.handler.FindOneHandler;
 import com.ecsimsw.fastcrud.handler.HandlerInfo;
 import com.ecsimsw.fastcrud.handler.HandlingMethod;
 import com.ecsimsw.fastcrud.handler.CrudHandler;
 import com.ecsimsw.fastcrud.exception.FastCrudException;
+import com.ecsimsw.fastcrud.handler.SaveHandler;
+import com.ecsimsw.fastcrud.handler.UpdateHandler;
 import com.ecsimsw.fastcrud.utils.ReflectionUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -16,11 +20,11 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 
 public enum Handling {
 
-    SAVE(CrudType.CREATE, FindAllHandler.class, RequestMethod.POST),
+    SAVE(CrudType.CREATE, SaveHandler.class, RequestMethod.POST),
     FIND_ALL(CrudType.READ, FindAllHandler.class, RequestMethod.GET),
-    FIND_BY_ID(CrudType.READ, FindAllHandler.class, RequestMethod.GET, "/*"),
-    UPDATE(CrudType.UPDATE, FindAllHandler.class, RequestMethod.PUT, "/*"),
-    DELETE(CrudType.DELETE, FindAllHandler.class, RequestMethod.DELETE, "/*");
+    FIND_BY_ID(CrudType.READ, FindOneHandler.class, RequestMethod.GET, "/*"),
+    UPDATE(CrudType.UPDATE, UpdateHandler.class, RequestMethod.PUT, "/*"),
+    DELETE(CrudType.DELETE, DeleteHandler.class, RequestMethod.DELETE, "/*");
 
     private final CrudType crudType;
     private final Class<?> handlerType;
@@ -45,7 +49,7 @@ public enum Handling {
             final Method method = ReflectionUtils.getAnnotatedMethod(crudHandler, HandlingMethod.class);
             return new HandlerInfo(requestMappingInfo(rootPath), crudHandler, method);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            throw new FastCrudException("");
+            throw new FastCrudException(e.getMessage());
         }
     }
 

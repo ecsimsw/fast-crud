@@ -17,8 +17,13 @@ public class TestEntity {
     public TestEntity() {
     }
 
-    public TestEntity(String name) {
+    public TestEntity(Long id, String name) {
+        this.id = id;
         this.name = name;
+    }
+
+    public TestEntity(String name) {
+        this(null, name);
     }
 
     public Long getId() {

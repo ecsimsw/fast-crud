@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.ResponseEntity;
 
 public abstract class CrudHandlerAbst implements CrudHandler {
 
@@ -24,6 +25,10 @@ public abstract class CrudHandlerAbst implements CrudHandler {
         this.repository = repository;
         this.entityType = entityType;
     }
+
+    @HandlingMethod
+    @Override
+    public abstract ResponseEntity<?> handle(HttpServletRequest request);
 
     protected Long requestId(HttpServletRequest request) {
         try {
