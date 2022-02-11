@@ -1,8 +1,8 @@
 package com.ecsimsw.fastcrud.handler;
 
 import com.ecsimsw.fastcrud.utils.ReflectionUtils;
+import javax.persistence.Id;
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
 
