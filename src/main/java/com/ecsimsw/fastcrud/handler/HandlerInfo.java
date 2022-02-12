@@ -9,7 +9,7 @@ public class HandlerInfo {
     private final Method method;
     private final RequestMappingInfo requestMappingInfo;
 
-    public HandlerInfo(RequestMappingInfo requestMappingInfo, CrudHandler handler, Method method) {
+    public HandlerInfo(CrudHandler handler, Method method, RequestMappingInfo requestMappingInfo) {
         this.handler = handler;
         this.method = method;
         this.requestMappingInfo = requestMappingInfo;

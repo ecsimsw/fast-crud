@@ -4,6 +4,7 @@ import com.ecsimsw.fastcrud.exception.ReflectionException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -58,5 +59,13 @@ public class ReflectionUtils {
                 .filter(it -> it.isAnnotationPresent(annotationClass))
                 .findAny()
                 .orElseThrow(() -> new ReflectionException("No annotation present"));
+    }
+
+    public static Object instance(Constructor<?> constructor, Object... args) {
+        try{
+            return constructor.newInstance(args);
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            throw new ReflectionException(e.getMessage());
+        }
     }
 }
