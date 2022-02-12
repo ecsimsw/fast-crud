@@ -17,7 +17,6 @@ import java.util.Optional;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -30,12 +29,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.ClassUtils;
 
 @AutoConfigureMockMvc
 @SpringBootTest
 public class WebIntegrationTest {
 
-    private static final String ENTITY_NAME = "sampleEntity";
+    private static final Class<?> SAMPLE_ENTITY_TYPE = SampleEntity.class;
+    private static final String ENTITY_NAME = ClassUtils.getShortNameAsProperty(SAMPLE_ENTITY_TYPE);
 
     @MockBean
     private SampleEntityRepository mockRepository;
@@ -45,7 +46,7 @@ public class WebIntegrationTest {
 
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
-    private SampleEntity dummyData;
+    private final SampleEntity dummyData = new SampleEntity(1L, "name");
 
     public WebIntegrationTest(
             @Autowired MockMvc mockMvc,
@@ -55,19 +56,13 @@ public class WebIntegrationTest {
         this.objectMapper = objectMapper;
     }
 
-    @BeforeEach
-    void setUp() {
-        dummyData = new SampleEntity(1L, "name");
-    }
-
     @DisplayName("post request :: 요청 entity를 저장한다.")
     @Test
     public void save() throws Exception {
-        final SampleEntity sampleEntity = new SampleEntity("name");
-
+        final SampleEntity testEntity = new SampleEntity("name");
         final String requestUrl = "/" + ENTITY_NAME;
         final MockHttpServletResponse response = mockMvc.perform(
-                        post(requestUrl).content(objectMapper.writeValueAsString(sampleEntity))
+                        post(requestUrl).content(objectMapper.writeValueAsString(testEntity))
                 )
                 .andExpect(status().isOk())
                 .andReturn()
@@ -75,7 +70,7 @@ public class WebIntegrationTest {
 
         assertThat(objectMapper.readValue(response.getContentAsString(), SampleEntity.class))
                 .usingRecursiveComparison()
-                .isEqualTo(sampleEntity);
+                .isEqualTo(testEntity);
     }
 
     @DisplayName("get request :: entity 전체 조회 결과를 반환한다.")
@@ -186,4 +181,3 @@ class SampleEntity {
 
 interface SampleEntityRepository extends JpaRepository<SampleEntity, Long> {
 }
-

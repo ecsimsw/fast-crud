@@ -22,7 +22,7 @@ public class FastCrud {
     public void addMapping() {
         final RequestMappingHandlerMapping handlerMapping = context.getBean(RequestMappingHandlerMapping.class);
         final String[] beanNamesForCRUD = context.getBeanNamesForAnnotation(CRUD.class);
-        Arrays.stream(beanNamesForCRUD).forEach(entity -> register(handlerMapping, entity));
+        Arrays.stream(beanNamesForCRUD).forEach(beanName -> register(handlerMapping, beanName));
     }
 
     private void register(RequestMappingHandlerMapping handlerMapping, String beanName) {
