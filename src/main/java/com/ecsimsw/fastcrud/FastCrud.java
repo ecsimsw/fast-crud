@@ -1,10 +1,9 @@
 package com.ecsimsw.fastcrud;
 
 import com.ecsimsw.fastcrud.annotation.CRUD;
-import com.ecsimsw.fastcrud.annotation.CrudType;
 import com.ecsimsw.fastcrud.exception.FastCrudException;
 import com.ecsimsw.fastcrud.handler.HandlerInfo;
-import com.ecsimsw.fastcrud.handler.Handling;
+import com.ecsimsw.fastcrud.handler.RequestHandlingMethod;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,20 +17,17 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 public class FastCrud {
 
     private final ApplicationContext context;
+    private final RequestHandlerMappings requestHandlerMappings;
 
-    public FastCrud(ApplicationContext context) {
+    public FastCrud(ApplicationContext context, RequestMappingHandlerMapping requestMappingHandlerMapping) {
         this.context = context;
+        this.requestHandlerMappings = new RequestHandlerMappings(requestMappingHandlerMapping);
     }
 
     @PostConstruct
     public void addMapping() {
-        final RequestHandlerMappings requestHandlerMappings = requestHandlerMappings();
-        targetEntities()
-                .forEach(target -> requestHandlerMappings.registerAll(handlerInfos(target)));
-    }
-
-    private RequestHandlerMappings requestHandlerMappings() {
-        return new RequestHandlerMappings(context.getBean(RequestMappingHandlerMapping.class));
+        final List<TargetEntity> targetEntities = targetEntities();
+        targetEntities.forEach(target -> requestHandlerMappings.registerAll(handlerInfos(target)));
     }
 
     private List<TargetEntity> targetEntities() {
@@ -41,9 +37,9 @@ public class FastCrud {
                 .collect(Collectors.toList());
     }
 
-    public List<HandlerInfo> handlerInfos(TargetEntity target) {
+    private List<HandlerInfo> handlerInfos(TargetEntity target) {
         final JpaRepository repository = jpaRepository(target.repositoryBeanName());
-        return Handling.handlerInfos(target, repository);
+        return RequestHandlingMethod.handlerInfos(target, repository);
     }
 
     private JpaRepository jpaRepository(String repositoryBeanName) {

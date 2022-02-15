@@ -10,6 +10,8 @@ import org.springframework.util.ClassUtils;
 
 public class TargetEntity {
 
+    private final static String POSTFIX_REPOSITORY_BEAN_NAME = "Repository";
+
     private final Class<?> type;
     private final String rootPath;
     private final String repositoryBeanName;
@@ -21,10 +23,19 @@ public class TargetEntity {
         this.type = targetObj.getClass();
 
         final String classShortName = ClassUtils.getShortNameAsProperty(type);
-        this.rootPath = crud().rootPath().isEmpty() ? classShortName : crud().rootPath();
+        this.rootPath = rootPath(classShortName);
+        this.repositoryBeanName = repositoryBeanName(classShortName);
+    }
 
-        final String defaultRepositoryBeanName = classShortName + "Repository";
-        this.repositoryBeanName = crud().repositoryBean().isEmpty() ? defaultRepositoryBeanName : crud().repositoryBean();
+    private String rootPath(String classShortName) {
+        final String userDefinedRootPath = crud().rootPath();
+        return userDefinedRootPath.isEmpty() ? classShortName : userDefinedRootPath;
+    }
+
+    private String repositoryBeanName(String classShortName) {
+        final String defaultRepositoryBeanName = classShortName + POSTFIX_REPOSITORY_BEAN_NAME;
+        final String userDefinedRepositoryBeanName = crud().repositoryBean();
+        return userDefinedRepositoryBeanName.isEmpty() ? defaultRepositoryBeanName : userDefinedRepositoryBeanName;
     }
 
     public List<CrudType> excludedTypes() {

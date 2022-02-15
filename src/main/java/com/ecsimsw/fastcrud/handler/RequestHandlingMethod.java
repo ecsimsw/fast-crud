@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 
-public enum Handling {
+public enum RequestHandlingMethod {
 
     SAVE(CrudType.CREATE, SaveHandler.class, RequestMethod.POST, ""),
     FIND_ALL(CrudType.READ, FindAllHandler.class, RequestMethod.GET, ""),
@@ -25,7 +25,7 @@ public enum Handling {
     private final RequestMethod requestMethod;
     private final String additionalPath;
 
-    Handling(CrudType crudType, Class<?> handlerType, RequestMethod requestMethod, String additionalPath) {
+    RequestHandlingMethod(CrudType crudType, Class<?> handlerType, RequestMethod requestMethod, String additionalPath) {
         this.crudType = crudType;
         this.handlerType = handlerType;
         this.requestMethod = requestMethod;
@@ -40,7 +40,7 @@ public enum Handling {
                 .collect(Collectors.toList());
     }
 
-    public HandlerInfo handlerInfo(String rootPath, JpaRepository repository, Class<?> type) {
+    private HandlerInfo handlerInfo(String rootPath, JpaRepository repository, Class<?> type) {
         final Constructor<?> constructor = ReflectionUtils.getConstructorOf(handlerType, JpaRepository.class, Class.class);
         final CrudHandler crudHandler = (CrudHandler) ReflectionUtils.instance(constructor, repository, type);
         final Method method = ReflectionUtils.getAnnotatedMethod(crudHandler, HandlingMethod.class);
@@ -54,7 +54,7 @@ public enum Handling {
                 .build();
     }
 
-    public CrudType crudType() {
+    private CrudType crudType() {
         return crudType;
     }
 }

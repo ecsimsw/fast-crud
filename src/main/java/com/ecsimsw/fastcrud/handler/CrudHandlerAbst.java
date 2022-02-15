@@ -26,8 +26,6 @@ public abstract class CrudHandlerAbst implements CrudHandler {
         this.entityType = entityType;
     }
 
-    @HandlingMethod
-    @Override
     public abstract ResponseEntity<?> handle(HttpServletRequest request);
 
     protected Long requestId(HttpServletRequest request) {

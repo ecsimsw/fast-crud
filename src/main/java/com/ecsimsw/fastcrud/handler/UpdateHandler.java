@@ -1,6 +1,5 @@
 package com.ecsimsw.fastcrud.handler;
 
-import com.ecsimsw.fastcrud.handler.CrudHandlerAbst;
 import com.ecsimsw.fastcrud.utils.ReflectionUtils;
 import javax.persistence.Id;
 import javax.servlet.http.HttpServletRequest;
