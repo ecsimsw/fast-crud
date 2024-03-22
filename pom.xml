@@ -15,7 +15,7 @@
     <name>fast-crud</name>
     <description>fast-crud</description>
     <properties>
-        <java.version>8</java.version>
+        <java.version>11</java.version>
     </properties>
 
     <dependencies>
@@ -53,7 +53,6 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

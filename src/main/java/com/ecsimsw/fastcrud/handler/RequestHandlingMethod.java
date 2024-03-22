@@ -36,7 +36,7 @@ public enum RequestHandlingMethod {
         final List<CrudType> excludedTypes = target.excludedTypes();
         return Arrays.stream(values())
                 .filter(it -> !excludedTypes.contains(it.crudType()))
-                .map(it -> it.handlerInfo(target.rootPath(), repository, target.type()))
+                .map(it -> it.handlerInfo(target.rootPath(), repository, target.entityType()))
                 .collect(Collectors.toList());
     }
 

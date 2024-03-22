@@ -8,45 +8,51 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 @Component
-public class FastCrud {
+public class FastCrudRegister {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FastCrudRegister.class);
 
     private final ApplicationContext context;
     private final RequestHandlerMappings requestHandlerMappings;
 
-    public FastCrud(ApplicationContext context, RequestMappingHandlerMapping requestMappingHandlerMapping) {
+    public FastCrudRegister(
+        ApplicationContext context,
+        RequestMappingHandlerMapping requestMappingHandlerMapping
+    ) {
         this.context = context;
         this.requestHandlerMappings = new RequestHandlerMappings(requestMappingHandlerMapping);
     }
 
     @PostConstruct
     public void addMapping() {
-        final List<TargetEntity> targetEntities = targetEntities();
-        targetEntities.forEach(target -> requestHandlerMappings.registerAll(handlerInfos(target)));
+        var targetEntities = findAllTargetEntity();
+        targetEntities.forEach(target -> {
+            LOGGER.info("Register fastCrud : " + target.repositoryType());
+            var handlerInfos = handlerInfos(target);
+            requestHandlerMappings.registerAll(handlerInfos);
+        });
     }
 
-    private List<TargetEntity> targetEntities() {
+    private List<TargetEntity> findAllTargetEntity() {
         return Arrays.stream(context.getBeanNamesForAnnotation(CRUD.class))
-                .map(context::getBean)
-                .map(TargetEntity::new)
-                .collect(Collectors.toList());
+            .map(context::getBean)
+            .map(TargetEntity::new)
+            .collect(Collectors.toList());
     }
 
     private List<HandlerInfo> handlerInfos(TargetEntity target) {
-        final JpaRepository repository = jpaRepository(target.repositoryBeanName());
-        return RequestHandlingMethod.handlerInfos(target, repository);
-    }
-
-    private JpaRepository jpaRepository(String repositoryBeanName) {
-        final Object repository = context.getBean(repositoryBeanName);
+        var repository = context.getBean(target.repositoryType());
         if (repository instanceof JpaRepository) {
-            return (JpaRepository) repository;
+            return RequestHandlingMethod.handlerInfos(target, (JpaRepository) repository);
         }
-        throw new FastCrudException("You need JpaRepository bean, name with " + repositoryBeanName);
+        throw new FastCrudException("You need JpaRepository bean with" + target.entityType());
     }
 }

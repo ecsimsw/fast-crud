@@ -1,7 +1,5 @@
 package com.ecsimsw.fastcrud.handler;
 
-import com.ecsimsw.fastcrud.handler.CrudHandlerAbst;
-import com.ecsimsw.fastcrud.handler.HandlingMethod;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;

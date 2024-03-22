@@ -1,1 +1,2 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.ecsimsw.fastcrud.FastCrud
+#org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.ecsimsw.fastcrud.FastCrudRegister
+#

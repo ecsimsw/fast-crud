@@ -15,7 +15,7 @@ public class SaveHandler extends CrudHandlerAbst {
     @HandlingMethod
     @Override
     public ResponseEntity<?> handle(HttpServletRequest request) {
-        final Object entity = mapEntityFromBody(request);
+        var entity = mapEntityFromBody(request);
         ReflectionUtils.setAnnotatedFieldValue(entity, Id.class, null);
         repository.save(entity);
         return ResponseEntity.ok(entity);

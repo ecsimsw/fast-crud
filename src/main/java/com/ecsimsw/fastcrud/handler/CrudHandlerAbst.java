@@ -1,6 +1,7 @@
 package com.ecsimsw.fastcrud.handler;
 
-import com.ecsimsw.fastcrud.exception.BadRequestException;
+import com.ecsimsw.fastcrud.exception.FastCrudBadRequestException;
+import com.ecsimsw.fastcrud.exception.FastCrudException;
 import com.ecsimsw.fastcrud.utils.HttpHandlerUtils;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,7 +33,7 @@ public abstract class CrudHandlerAbst implements CrudHandler {
         try {
             return Long.parseLong(HttpHandlerUtils.getLastSegment(request));
         } catch (NumberFormatException e) {
-            throw new BadRequestException("Id must be Long type : the last segment of path has to be a parsable long");
+            throw new FastCrudBadRequestException("Id must be Long type : the last segment of path has to be a parsable long");
         }
     }
 
@@ -40,16 +41,16 @@ public abstract class CrudHandlerAbst implements CrudHandler {
         try {
             return repository.findById(id).get();
         } catch (NoSuchElementException e) {
-            throw new BadRequestException("No value present");
+            throw new FastCrudBadRequestException("No value present");
         }
     }
 
     protected Object mapEntityFromBody(HttpServletRequest request) {
         try {
-            final String body = HttpHandlerUtils.getBody(request);
-            return OBJECT_MAPPER.readValue(body, entityType);
+            var requestBody = HttpHandlerUtils.getBody(request);
+            return OBJECT_MAPPER.readValue(requestBody, entityType);
         } catch (IOException e) {
-            throw new BadRequestException("The input JSON structure does not match structure expected for result type");
+            throw new FastCrudBadRequestException("The input JSON structure does not match structure expected for result type");
         }
     }
 }

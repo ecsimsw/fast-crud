@@ -17,5 +17,5 @@ public @interface CRUD {
 
     CrudType[] excludeType() default {};
 
-    String repositoryBean() default "";
+    Class<?> repositoryType();
 }
