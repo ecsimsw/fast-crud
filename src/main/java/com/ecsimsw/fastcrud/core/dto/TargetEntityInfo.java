@@ -14,13 +14,13 @@ public class TargetEntityInfo {
     private final String rootPath;
     private final Class<?> repositoryType;
 
-    public TargetEntityInfo(Object targetObj) {
-        if (!targetObj.getClass().isAnnotationPresent(Entity.class)) {
+    public TargetEntityInfo(Class<?> entityType) {
+        if (!entityType.isAnnotationPresent(Entity.class)) {
             throw new FastCrudException("CRUD annotation must be with @Entity annotation");
         }
-        this.entityType = targetObj.getClass();
-        var crudInfo = entityType.getAnnotation(CRUD.class);
-        this.rootPath = crudInfo.rootPath().isEmpty() ? ClassUtils.getShortNameAsProperty(entityType) : crudInfo.rootPath();
+        this.entityType = entityType;
+        var crudInfo = this.entityType.getAnnotation(CRUD.class);
+        this.rootPath = crudInfo.rootPath().isEmpty() ? ClassUtils.getShortNameAsProperty(this.entityType) : crudInfo.rootPath();
         this.repositoryType = crudInfo.repositoryType();
     }
 

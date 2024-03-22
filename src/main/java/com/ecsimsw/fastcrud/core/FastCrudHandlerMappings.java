@@ -5,16 +5,19 @@ import com.ecsimsw.fastcrud.core.dto.HandlerInfo;
 import com.ecsimsw.fastcrud.core.dto.TargetEntityInfo;
 import com.ecsimsw.fastcrud.core.handler.CrudHandlerType;
 import com.ecsimsw.fastcrud.exception.FastCrudException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+
+import javax.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class FastCrudHandlerMappings {
@@ -36,9 +39,9 @@ public class FastCrudHandlerMappings {
     public void addMapping() {
         var targetEntities = findAllTargetEntity();
         targetEntities.forEach(target -> {
-            LOGGER.info("Register fastCrud : " + target.entityType());
+            LOGGER.info("FastCrud : " + target.entityType());
             var handlerInfos = handlerInfos(target);
-            handlerInfos.forEach(it-> handlerMapping.registerMapping(
+            handlerInfos.forEach(it -> handlerMapping.registerMapping(
                 it.requestMappingInfo(),
                 it.handler(),
                 it.method())
@@ -47,10 +50,9 @@ public class FastCrudHandlerMappings {
     }
 
     private List<TargetEntityInfo> findAllTargetEntity() {
-        // TODO:: Remove component
-        return Arrays.stream(context.getBeanNamesForAnnotation(CRUD.class))
-            .map(context::getBean)
-            .map(TargetEntityInfo::new)
+        return AutoConfigurationPackages.get(context).stream()
+            .flatMap(it -> new Reflections(it).getTypesAnnotatedWith(CRUD.class).stream()
+            .map(TargetEntityInfo::new))
             .collect(Collectors.toList());
     }
 
