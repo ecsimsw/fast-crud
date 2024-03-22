@@ -2,14 +2,13 @@ package com.ecsimsw.fastcrud.core.handler;
 
 import com.ecsimsw.fastcrud.exception.FastCrudBadRequestException;
 import com.ecsimsw.fastcrud.exception.FastCrudException;
-import com.ecsimsw.fastcrud.utils.HttpHandlerUtils;
-import com.ecsimsw.fastcrud.utils.ReflectionUtils;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Arrays;
 import javax.persistence.Id;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.io.IOUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
 
@@ -50,7 +49,7 @@ public class UpdateRequestHandler extends CrudRequestHandler {
 
     private Object requestBodyToEntity(HttpServletRequest request) {
         try {
-            var requestBody = HttpHandlerUtils.getBody(request);
+            var requestBody = IOUtils.toString(request.getReader());
             return OBJECT_MAPPER.readValue(requestBody, entityType);
         } catch (IOException e) {
             throw new FastCrudBadRequestException("The input JSON structure does not match structure expected for result type");
