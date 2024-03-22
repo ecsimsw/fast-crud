@@ -1,4 +1,4 @@
-package com.ecsimsw.fastcrud.handler;
+package com.ecsimsw.fastcrud.core.handler;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

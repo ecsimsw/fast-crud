@@ -1,21 +1,19 @@
-package com.ecsimsw.fastcrud.handler;
+package com.ecsimsw.fastcrud.core.handler;
 
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
 
-public class DeleteHandler extends CrudHandlerAbst {
+public class DeleteRequestHandler extends CrudRequestHandler {
 
-    public DeleteHandler(JpaRepository repository, Class<?> entityType) {
+    public DeleteRequestHandler(JpaRepository repository, Class<?> entityType) {
         super(repository, entityType);
     }
 
     @HandlingMethod
     @Override
     public ResponseEntity<?> handle(HttpServletRequest request) {
-        final Long id = requestId(request);
-        final Object object = getById(id);
-        repository.delete(object);
+        repository.deleteById(requestId(request));
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,4 +1,4 @@
-package com.ecsimsw.fastcrud;
+package com.ecsimsw.fastcrud.core.dto;
 
 import com.ecsimsw.fastcrud.annotation.CRUD;
 import com.ecsimsw.fastcrud.annotation.CrudType;
@@ -8,24 +8,25 @@ import java.util.List;
 import javax.persistence.Entity;
 import org.springframework.util.ClassUtils;
 
-public class TargetEntity {
+public class TargetEntityInfo {
 
     private final Class<?> entityType;
     private final String rootPath;
     private final Class<?> repositoryType;
 
-    public TargetEntity(Object targetObj) {
+    public TargetEntityInfo(Object targetObj) {
         if (!targetObj.getClass().isAnnotationPresent(Entity.class)) {
             throw new FastCrudException("CRUD annotation must be with @Entity annotation");
         }
         this.entityType = targetObj.getClass();
-        var userDefinedRootPath = crud().rootPath();
-        this.rootPath = userDefinedRootPath.isEmpty() ? ClassUtils.getShortNameAsProperty(entityType) : userDefinedRootPath;
-        this.repositoryType = crud().repositoryType();
+        var crudInfo = entityType.getAnnotation(CRUD.class);
+        this.rootPath = crudInfo.rootPath().isEmpty() ? ClassUtils.getShortNameAsProperty(entityType) : crudInfo.rootPath();
+        this.repositoryType = crudInfo.repositoryType();
     }
 
-    public List<CrudType> excludedTypes() {
-        return Arrays.asList(crud().excludeType());
+    public boolean contains(CrudType type) {
+        return Arrays.asList(entityType.getAnnotation(CRUD.class).excludeType())
+            .contains(type);
     }
 
     public String rootPath() {
@@ -34,10 +35,6 @@ public class TargetEntity {
 
     public Class<?> repositoryType() {
         return repositoryType;
-    }
-
-    private CRUD crud() {
-        return entityType.getAnnotation(CRUD.class);
     }
 
     public Class<?> entityType() {

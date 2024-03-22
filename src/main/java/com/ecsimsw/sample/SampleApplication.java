@@ -1,6 +1,6 @@
 package com.ecsimsw.sample;
 
-import com.ecsimsw.fastcrud.EnableCrud;
+import com.ecsimsw.fastcrud.annotation.EnableCrud;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
