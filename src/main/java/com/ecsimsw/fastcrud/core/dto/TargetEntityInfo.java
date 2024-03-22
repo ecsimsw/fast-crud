@@ -25,8 +25,8 @@ public class TargetEntityInfo {
     }
 
     public boolean contains(CrudType type) {
-        return Arrays.asList(entityType.getAnnotation(CRUD.class).excludeType())
-            .contains(type);
+        var excludes = Arrays.asList(entityType.getAnnotation(CRUD.class).excludeType());
+        return !excludes.contains(type);
     }
 
     public String rootPath() {

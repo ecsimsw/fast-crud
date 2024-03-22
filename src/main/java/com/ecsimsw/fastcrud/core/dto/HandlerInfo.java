@@ -12,7 +12,7 @@ public class HandlerInfo {
 
     public HandlerInfo(CrudRequestHandler handlerInstance, RequestMethod httpMethod, String requestPath) {
         this.handler = handlerInstance;
-        this.requestMappingInfo =  RequestMappingInfo
+        this.requestMappingInfo = RequestMappingInfo
             .paths(requestPath)
             .methods(httpMethod)
             .build();
