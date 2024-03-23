@@ -13,6 +13,9 @@ import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.annotation.PostConstruct;
@@ -43,6 +46,10 @@ public class FastCrudHandlerMappings {
         targetEntities.forEach(target -> {
             LOGGER.info("FastCrud : " + target.entityType());
             var handlerInfos = handlerInfos(target);
+            new RequestMappingInfo.BuilderConfiguration()
+                .setPathMatcher(new AntPathMatcher());
+
+
             handlerInfos.forEach(it -> handlerMapping.registerMapping(
                 it.requestMappingInfo(),
                 it.handler(),
