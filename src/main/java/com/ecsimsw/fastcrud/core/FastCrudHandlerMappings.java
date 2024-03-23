@@ -8,6 +8,7 @@ import com.ecsimsw.fastcrud.exception.FastCrudException;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,6 +30,7 @@ public class FastCrudHandlerMappings {
 
     public FastCrudHandlerMappings(
         ApplicationContext context,
+        @Qualifier(value = "requestMappingHandlerMapping")
         RequestMappingHandlerMapping handlerMapping
     ) {
         this.context = context;

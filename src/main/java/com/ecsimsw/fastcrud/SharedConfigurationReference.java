@@ -8,6 +8,5 @@ import org.springframework.context.annotation.Configuration;
 public class SharedConfigurationReference {
 
     public static void main(String[] args) {
-
     }
 }
