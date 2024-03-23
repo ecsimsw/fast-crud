@@ -1,165 +1,151 @@
 # fast-crud
-Automatic creation of simple CRUD API of Spring boot and JPA project.
+매번 반복되는 Spring boot & JPA 의 기본적인 CRUD API 를 자동화 할 수 있지 않을까?
 
-<br>
+latest version : 1.0.1
 
-## How to use
+## 기능들
+- 어노테이션 표시로 엔티티의 Create, Read, Update, Delete API 가 생성된다.
+- 자동 생성된 API의 Root path 를 설정할 수 있다.
+- CRUD 중 추가할, 또는 제외할 기능을 선택할 수 있다.
 
-#### Step 1. Add the dependency.
+## 미리보기
+``` java
+@CRUD(repositoryType = SampleRepository.class)
+@Entity
+class Sample {
+}
+```
 
-<details>
-<summary>Gradle (build.gradle)</summary>
+Entity 의 @CRUD 를 읽어, 아래의 API가 자동 생성된다.
 
- ``` groovy
+``` 
+[POST] /sample
+[GET] /sample 
+[GET] /sample/{id}
+[PUT] /sample
+[DELETE] /sample/{id}
+```
+
+## 사용 방법
+
+### build.gradle 
+
+라이브러리 의존성을 추가한다.     
+```
 repositories {
     maven { url 'https://jitpack.io' }
 }
-```
 
- ``` groovy
 dependencies {
-    implementation 'com.github.ecsimsw:fast-crud:0.0.2'
+    implementation 'com.github.ecsimsw:api-shutdown:1.0.1'
 }
 ```
-</details>
 
-<details>
-<summary>Maven (pom.xml)</summary>
- 
-``` xml
-<repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-```
-``` xml
-<dependency>
-    <groupId>com.github.ecsimsw</groupId>
-    <artifactId>fast-crud</artifactId>
-    <version>0.0.2</version>
-</dependency>
-```
+### @EnableCrud 추가
 
-</details>
-
-<br>
-
-#### Step 2. Put @CRUD on your entity class.
+@EnableCrud 로 라이브러리 사용을 활성화한다.     
 
 ``` java
-@CRUD
+@EnableCrud
+@SpringBootApplication
+public class MyApplication {}
+```
+
+### @CRUD 표시
+
+CRUD 를 적용할 Entity에 @CRUD와 엔티티 Repository type 를 표시한다.
+
+``` java
+@CRUD(repositoryType = SampleRepository.class)
 @Enity
 class Sample {
 }
 ```
 
-<br>
-
-#### Step 3. Declare JpaRepository with entity name.
-
 ``` java
-public interface SampleRepository extends JpaRepository<Sample, Long> {}
+interface SampleRepository extends JpaRepository<Sample, Long> {
+}
 ```
 
-<br>
+### API 명세
 
-#### Step 4. That's it. You just made basic CRUD http api bellow.
+아래 CRUD api 가 자동 생성된다.      
+생성과 수정의 Request body 에는 Entity 의 프로퍼티 키와 값이 포함된다.
 
-| |HttpMethod|Path|RequestBody (Json)|
-|----|------|----|-----|
-|save|POST|/{entityName}|O|
-|findAll|GET|/{entityName}|X|
-|findById|GET|/{entityName}/{id}|X|
-|update|PUT|/{entityName}/{id}|O|
-|delete|DELETE|/{entityName}/{id}|X|
+#### 생성 
+```
+[POST] /sample 
+{
+   "name" : "ecsimsw"
+}
+```
 
-<br>
+#### 조회
 
-#### Step 5. Example
+```
+[GET] /sample/{id}
+```
+
+#### 전체 조회
+```
+[GET] /sample
+```
+
+#### 수정
+
+```
+[PUT] /sample/{id} 
+{
+   "name" : "new_name"
+}
+```
+
+#### 삭제 
+
+```
+[DELETE] /sample/{id}
+```
+
+### Root path 설정
+
+기본 API 기본 경로는 Entity 이름이다. @CRUD 어노테이션의 rootPath 값으로 API 기본 경로를 변경할 수 있다.     
+아래 예시의 경우 `/api/sample` 으로 API 경로가 생성된다.
+
 ``` java
-@CRUD
+@CRUD(rootPath = "api/sample")
 @Entity
-public class Sample {
+class Sample {}
+```
 
-    @GeneratedValue
-    @Id
-    private Long id;
-    private String name;
-    
-    public Sample() {
-    }
-    
-    public Sample(String name) {
-        this.name = name;
-    }
+### 제외 기능 설정 
 
-    public Long getId() {
-        return id;
-    }
+CRUD 중 제외할 기능을 명시할 수 있다.      
+아래 예시의 겨우 엔티티의 수정과 삭제 기능없이, 생성과 조회 API 만 자동 생성된다.
 
-    public String getName() {
-        return name;
-    }
+```
+@CRUD(excludeType = {CrudType.DELETE, CrudType.UPDATE})
+@Entity
+class Sample {
+```
+
+## 변경 사항
+
+### v1.0.0
+
+Spring boot 2.6 이상부터 MVC 핸들러 매핑 경로 매칭 기본 전략이 AntPathMatcher -> PathPatternParser 로 수정되었다. RequestMappingHandlerMapping 에 추가되는 RequestMappingInfo 에 PathMatcher 를 설정하는 것으로, 기본 전략은 유지한 채 라이브러리에서 자동 생성하는 RequestMapping 정보만 AntPathMatcher를 따르도록 수정한다. 
+
+``` java
+public HandlerInfo(CrudRequestHandler handlerInstance, RequestMethod httpMethod, String requestPath) {
+    this.handler = handlerInstance;
+    var buildConfig = new RequestMappingInfo.BuilderConfiguration();
+    buildConfig.setPathMatcher(new AntPathMatcher());
+    buildConfig.setPatternParser(new PathPatternParser());
+    this.requestMappingInfo = RequestMappingInfo
+        .paths(requestPath)
+        .methods(httpMethod)
+        .options(buildConfig)
+        .build();
 }
 ```
 
-``` java
-public interface SampleRepository extends JpaRepository<Sample, Long> {}
-```
 
-``` 
-[POST] localhost:8080/sample 
-{
-    "name" : "ecsimsw"
-}
-[PUT] localhost:8080/sample/1 
-{
-    "name" : "new_name"
-}
-[GET] localhost:8080/sample 
-[GET] localhost:8080/sample/1
-[DELETE] localhost:8080/sample/1
-```
-
-<br>
-
-## Additional features
-
-#### Repository name
-
-You can set your repository bean name in @CRUD with `repositoryBean` parameter.
-
-``` java
-@CRUD(repositoryBean = "anotherName")
-```
-
-``` java
-public interface AnotherName extends JpaRepository<Sample, Long> {}
-```
-
-<br>
-
-#### API root path
-
-You can set your api `root path`  
-
-``` java
-@CRUD(rootPath = "anotherRoot")
-```
-
-```
-/anotherRoot 
-/anotherRoot/{id} 
-```
-
-<br>
-
-#### Exclude method
-
-Method can be excluded in @CRUD with `exclude` parameter.
-
-``` java
-@CRUD(exclude = {CrudMethod.UPDATE, CrudMethod.DELETE})
-```
