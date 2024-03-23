@@ -16,7 +16,7 @@ public class HandlerInfo {
         this.handler = handlerInstance;
         var buildConfig = new RequestMappingInfo.BuilderConfiguration();
         buildConfig.setPathMatcher(new AntPathMatcher());
-        this.requestMappingInfo =  RequestMappingInfo
+        this.requestMappingInfo = RequestMappingInfo
             .paths(requestPath)
             .methods(httpMethod)
             .options(buildConfig)

@@ -46,10 +46,6 @@ public class FastCrudHandlerMappings {
         targetEntities.forEach(target -> {
             LOGGER.info("FastCrud : " + target.entityType());
             var handlerInfos = handlerInfos(target);
-            new RequestMappingInfo.BuilderConfiguration()
-                .setPathMatcher(new AntPathMatcher());
-
-
             handlerInfos.forEach(it -> handlerMapping.registerMapping(
                 it.requestMappingInfo(),
                 it.handler(),

@@ -10,11 +10,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class SampleApplication {
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(SampleApplication.class);
-        ConfigurableApplicationContext run = app.run(args);
-        String[] beanDefinitionNames = run.getBeanDefinitionNames();
-        for(var name : beanDefinitionNames) {
-            System.out.println(name);
-        }
+        var app = new SpringApplication(SampleApplication.class);
+        app.run(args);
     }
 }
