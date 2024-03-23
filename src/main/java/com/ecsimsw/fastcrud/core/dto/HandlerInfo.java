@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.util.pattern.PathPatternParser;
 
 public class HandlerInfo {
 
@@ -16,6 +17,7 @@ public class HandlerInfo {
         this.handler = handlerInstance;
         var buildConfig = new RequestMappingInfo.BuilderConfiguration();
         buildConfig.setPathMatcher(new AntPathMatcher());
+        buildConfig.setPatternParser(new PathPatternParser());
         this.requestMappingInfo = RequestMappingInfo
             .paths(requestPath)
             .methods(httpMethod)
